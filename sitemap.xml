@@ -27,6 +27,7 @@
 <link rel='https://api.w.org/' href='https://martinposta.github.io/minimal/wp-json/' />
 <link rel="EditURI" type="application/rsd+xml" title="RSD" href="https://martinposta.github.io/minimal/xmlrpc.php?rsd" />
 <meta name="generator" content="WordPress 5.0.3" />
+<link rel="shortcut icon" href="https://martinposta.github.io/minimal/wp-content/uploads/2019/02/favicon-1.ico" />
 		<style type="text/css">.recentcomments a{display:inline !important;padding:0 !important;margin:0 !important;}</style>
 				<style type="text/css">
 					.site-title,
@@ -139,9 +140,9 @@
 									
 
 <form role="search" method="get" class="search-form" action="https://martinposta.github.io/minimal/">
-	<label for="search-form-5c5b758e0cc90">
+	<label for="search-form-5c5caa274e244">
 		<span class="screen-reader-text">Search for:</span>
-        <input type="search" id="search-form-5c5b758e0cc90" class="search-field" placeholder="Search &hellip;" value="" name="s" />
+        <input type="search" id="search-form-5c5caa274e244" class="search-field" placeholder="Search &hellip;" value="" name="s" />
 	</label>
 	<button type="submit" class="search-submit">
     	<span class="screen-reader-text">
