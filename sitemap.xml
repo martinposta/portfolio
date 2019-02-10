@@ -140,9 +140,9 @@
 									
 
 <form role="search" method="get" class="search-form" action="https://martinposta.github.io/minimal/">
-	<label for="search-form-5c5caa274e244">
+	<label for="search-form-5c609240893f3">
 		<span class="screen-reader-text">Search for:</span>
-        <input type="search" id="search-form-5c5caa274e244" class="search-field" placeholder="Search &hellip;" value="" name="s" />
+        <input type="search" id="search-form-5c609240893f3" class="search-field" placeholder="Search &hellip;" value="" name="s" />
 	</label>
 	<button type="submit" class="search-submit">
     	<span class="screen-reader-text">
