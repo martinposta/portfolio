@@ -9,24 +9,24 @@
 <link rel='dns-prefetch' href='//s.w.org' />
 <link rel="alternate" type="application/rss+xml" title="Martin Pošta &raquo; Feed" href="https://martinposta.github.io/minimal/feed/" />
 <link rel="alternate" type="application/rss+xml" title="Martin Pošta &raquo; Comments Feed" href="https://martinposta.github.io/minimal/comments/feed/" />
-<link rel='stylesheet' id='wp-block-library-css'  href='https://martinposta.github.io/minimal/wp-includes/css/dist/block-library/style.min.css?ver=5.0.3' type='text/css' media='all' />
+<link rel='stylesheet' id='wp-block-library-css'  href='https://martinposta.github.io/minimal/wp-includes/css/dist/block-library/style.min.css?ver=5.0.4' type='text/css' media='all' />
 <link rel='stylesheet' id='filterable-portfolio-css'  href='https://martinposta.github.io/minimal/wp-content/plugins/filterable-portfolio/assets/css/style.css?ver=1.4.0' type='text/css' media='all' />
 <link rel='stylesheet' id='font-awesome-css'  href='https://martinposta.github.io/minimal/wp-content/plugins/tm-timeline/css/font-awesome.min.css?ver=4.6.3' type='text/css' media='all' />
 <link rel='stylesheet' id='tm-timeline-css-css'  href='https://martinposta.github.io/minimal/wp-content/plugins/tm-timeline/css/tm-timeline.css?ver=1.1.1' type='text/css' media='all' />
 <link rel='stylesheet' id='minimal-portfolio-google-fonts-css'  href='//fonts.googleapis.com/css?family=Poppins%3A300%2C400%2C500%2C600%2C700%2C800%2C900%7CRoboto%3A300%2C400%2C500%2C700%2C900&#038;subset=latin%2Clatin-ext' type='text/css' media='all' />
-<link rel='stylesheet' id='bootstrap-css'  href='https://martinposta.github.io/minimal/wp-content/themes/minimal-portfolio/assets/css/bootstrap.css?ver=5.0.3' type='text/css' media='all' />
-<link rel='stylesheet' id='fontawesome-css'  href='https://martinposta.github.io/minimal/wp-content/themes/minimal-portfolio/assets/css/font-awesome.css?ver=5.0.3' type='text/css' media='all' />
-<link rel='stylesheet' id='simple-line-icons-css'  href='https://martinposta.github.io/minimal/wp-content/themes/minimal-portfolio/assets/css/simple-line-icons.css?ver=5.0.3' type='text/css' media='all' />
-<link rel='stylesheet' id='owlcarousel-css'  href='https://martinposta.github.io/minimal/wp-content/themes/minimal-portfolio/assets/css/owl-carousel.css?ver=5.0.3' type='text/css' media='all' />
+<link rel='stylesheet' id='bootstrap-css'  href='https://martinposta.github.io/minimal/wp-content/themes/minimal-portfolio/assets/css/bootstrap.css?ver=5.0.4' type='text/css' media='all' />
+<link rel='stylesheet' id='fontawesome-css'  href='https://martinposta.github.io/minimal/wp-content/themes/minimal-portfolio/assets/css/font-awesome.css?ver=5.0.4' type='text/css' media='all' />
+<link rel='stylesheet' id='simple-line-icons-css'  href='https://martinposta.github.io/minimal/wp-content/themes/minimal-portfolio/assets/css/simple-line-icons.css?ver=5.0.4' type='text/css' media='all' />
+<link rel='stylesheet' id='owlcarousel-css'  href='https://martinposta.github.io/minimal/wp-content/themes/minimal-portfolio/assets/css/owl-carousel.css?ver=5.0.4' type='text/css' media='all' />
 <link rel='stylesheet' id='minimal-portfolio-style-css'  href='https://martinposta.github.io/minimal/wp-content/themes/minimal-portfolio/style.css?ver=1.0' type='text/css' media='all' />
 <link rel='stylesheet' id='socicon-css'  href='https://martinposta.github.io/minimal/wp-content/plugins/social-icons-widget-by-wpzoom/assets/css/socicon.css?ver=20181009' type='text/css' media='all' />
 <link rel='stylesheet' id='genericons-css'  href='https://martinposta.github.io/minimal/wp-content/plugins/social-icons-widget-by-wpzoom/assets/css/genericons.css?ver=20180625' type='text/css' media='all' />
-<link rel='stylesheet' id='dashicons-css'  href='https://martinposta.github.io/minimal/wp-includes/css/dashicons.min.css?ver=5.0.3' type='text/css' media='all' />
+<link rel='stylesheet' id='dashicons-css'  href='https://martinposta.github.io/minimal/wp-includes/css/dashicons.min.css?ver=5.0.4' type='text/css' media='all' />
 <script type='text/javascript' src='https://martinposta.github.io/minimal/wp-includes/js/jquery/jquery.js?ver=1.12.4'></script>
 <script type='text/javascript' src='https://martinposta.github.io/minimal/wp-includes/js/jquery/jquery-migrate.min.js?ver=1.4.1'></script>
 <link rel='https://api.w.org/' href='https://martinposta.github.io/minimal/wp-json/' />
 <link rel="EditURI" type="application/rsd+xml" title="RSD" href="https://martinposta.github.io/minimal/xmlrpc.php?rsd" />
-<meta name="generator" content="WordPress 5.0.3" />
+<meta name="generator" content="WordPress 5.0.4" />
 <link rel="shortcut icon" href="https://martinposta.github.io/minimal/wp-content/uploads/2019/02/favicon-1.ico" />
 		<style type="text/css">.recentcomments a{display:inline !important;padding:0 !important;margin:0 !important;}</style>
 				<style type="text/css">
@@ -139,9 +139,9 @@
 									
 
 <form role="search" method="get" class="search-form" action="https://martinposta.github.io/minimal/">
-	<label for="search-form-5c63243e894bf">
+	<label for="search-form-5c8cfed5afd04">
 		<span class="screen-reader-text">Search for:</span>
-        <input type="search" id="search-form-5c63243e894bf" class="search-field" placeholder="Search &hellip;" value="" name="s" />
+        <input type="search" id="search-form-5c8cfed5afd04" class="search-field" placeholder="Search &hellip;" value="" name="s" />
 	</label>
 	<button type="submit" class="search-submit">
     	<span class="screen-reader-text">
