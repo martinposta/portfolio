@@ -276,6 +276,7 @@ body.zmm-open {overflow: hidden;}
 .portfolio-items .button {font-size: 13px;}
 .portfolio-items.fp-theme-two h4 {color: #fff;}
 .project-content h4, .project-meta h4 {font-size: 20px;margin-bottom: 20px;}
+.project-content {width: 100%;}
 .project-meta {display: none;}
 .project-meta strong {font-size: 15px;}
 .portfolio-title-section h2 {font-size: 25px;letter-spacing: 5px;line-height: 1.7;font-weight: 400;text-transform: uppercase;}
