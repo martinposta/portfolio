@@ -34,7 +34,7 @@ h1, h2, h3, h4, h5, h6 {font-family: "Poppins",sans-serif;font-weight: 500;text-
 h1 {font-size: 24px;letter-spacing: 1px;}
 h2 {font-size: 20px;letter-spacing: 1px;}
 h3 {font-size: 18px;letter-spacing: 1px;}
-h4 {font-size: 16px;letter-spacing: 1px;}
+h4 {font-size: 16px;letter-spacing: 1px; display:none;}
 h5 {font-size: 15px;letter-spacing: 1px;}
 h6 {font-size: 13px;letter-spacing: 1px;}
 p {margin-bottom: 1.5em;}
