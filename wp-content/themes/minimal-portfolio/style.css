@@ -313,3 +313,6 @@ blockquote p {margin: 0;}
     display: none;
     margin: 0 auto;
 }
+.footer-top {
+    display: none;
+}
