@@ -309,3 +309,7 @@ blockquote p {margin: 0;}
 .contact-page .mail .content-wrapper a {display: block;}
 .contact-page .contact-details {margin-bottom: 30px;}
 .contact-page textarea {max-height: 150px;}
+.my-icons {
+    display: none;
+    margin: 0 auto;
+}
