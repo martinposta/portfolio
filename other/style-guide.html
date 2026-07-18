@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Style Guide — Martin Pošta notebook design</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Special+Elite&family=Reenie+Beanie&family=Work+Sans:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/assets/notebook.css">
+<style>
+  .guide-section{padding:48px 0;border-bottom:1px dashed var(--grid)}
+  .guide-section h2{font-family:'Special Elite',monospace;font-size:20px;margin-bottom:6px}
+  .guide-section .guide-desc{color:var(--ink-dim);font-size:14px;margin-bottom:28px;max-width:60ch}
+  .swatch-row{display:flex;gap:16px;flex-wrap:wrap}
+  .swatch{width:120px}
+  .swatch .chip{height:64px;border:1px solid var(--grid)}
+  .spec-label{font-family:'Special Elite',monospace;font-size:11px;color:var(--ink-dim);
+    margin-top:8px;display:block;word-break:break-all}
+  .demo-row{display:flex;gap:14px;flex-wrap:wrap;align-items:flex-start;margin-bottom:18px}
+  .placeholder-video{aspect-ratio:16/9;background:#000;color:#fff;display:flex;align-items:center;
+    justify-content:center;font-family:'Special Elite',monospace;font-size:12px;text-align:center;padding:12px}
+</style>
+</head>
+<body>
+
+<div class="spine"></div>
+<div class="margin-rule"></div>
+
+<div data-include="/partials/header.html"></div>
+
+<div class="wrap">
+
+  <div style="padding-top:40px 0 8px">
+    <h1 style="font-family:'Special Elite',monospace;font-size:clamp(30px,5vw,44px);margin:32px 0 4px">Style Guide</h1>
+    <p style="color:var(--ink-dim);font-size:14px;max-width:60ch">Every reusable piece of the notebook design in one place. Copy the class names straight into a new file in /projects/. Anything changed in notebook.css updates here and on every real page at once.</p>
+  </div>
+
+  <section class="guide-section">
+    <h2>Colors</h2>
+    <div class="guide-desc">Four categories, four colors — feature / vfx / games / shorts — used consistently across .thumb, .cat-flag stays black tape regardless of category.</div>
+    <div class="swatch-row">
+      <div class="swatch"><div class="chip" style="background:var(--bg)"></div><span class="spec-label">--bg</span></div>
+      <div class="swatch"><div class="chip" style="background:var(--card)"></div><span class="spec-label">--card</span></div>
+      <div class="swatch"><div class="chip" style="background:var(--kraft)"></div><span class="spec-label">--kraft (footer)</span></div>
+      <div class="swatch"><div class="chip" style="background:var(--ink)"></div><span class="spec-label">--ink</span></div>
+      <div class="swatch"><div class="chip" style="background:var(--feature)"></div><span class="spec-label">--feature</span></div>
+      <div class="swatch"><div class="chip" style="background:var(--vfx)"></div><span class="spec-label">--vfx</span></div>
+      <div class="swatch"><div class="chip" style="background:var(--games)"></div><span class="spec-label">--games</span></div>
+      <div class="swatch"><div class="chip" style="background:var(--shorts)"></div><span class="spec-label">--shorts</span></div>
+    </div>
+  </section>
+
+  <section class="guide-section">
+    <h2>Typography</h2>
+    <div class="guide-desc">Special Elite for headlines/labels (typewriter, now bold via font-weight:700 synthetic bold), Reenie Beanie for handwritten asides, Work Sans for body copy.</div>
+    <h1 style="font-family:'Special Elite',monospace;font-size:44px;text-shadow:1.5px 0 rgba(178,58,46,.35)">Headline h1</h1>
+    <span class="spec-label">h1, h2, .logo, .tape-label, .tab, nav — all Special Elite</span>
+    <p style="font-family:'Reenie Beanie',cursive;font-size:28px;color:var(--vfx);margin-top:18px">a handwritten margin note</p>
+    <span class="spec-label">.note, .aside-note, .reel-caption, .handwritten-highlight, .fave-tag</span>
+    <p class="prose" style="margin-top:18px"><span style="font-size:16.5px">Body copy sits in Work Sans at 16.5px inside .prose — .prose is now full width, matching .board sections (no more narrow 64ch column).</span></p>
+  </section>
+
+  <section class="guide-section">
+    <h2>Tape labels</h2>
+    <div class="guide-desc">Black by default. .accent = red highlight/CTA. .blue = feature-blue secondary meta tag.</div>
+    <div class="demo-row">
+      <div><span class="tape-label">Default</span><span class="spec-label">.tape-label</span></div>
+      <div><span class="tape-label accent">Accent / CTA</span><span class="spec-label">.tape-label.accent</span></div>
+      <div><span class="tape-label blue">Secondary meta</span><span class="spec-label">.tape-label.blue</span></div>
+    </div>
+    <div class="demo-row">
+      <a class="back-link">← back-link style</a><span class="spec-label" style="align-self:center">.back-link</span>
+    </div>
+  </section>
+
+  <section class="guide-section">
+    <h2>Filter tabs</h2>
+    <div class="guide-desc">.tab data-filter must match a card's data-cat: feature / vfx / games / shorts.</div>
+    <div class="tabs">
+      <div class="tab active">all</div><div class="tab">feature</div><div class="tab">vfx</div><div class="tab">games</div><div class="tab">shorts / others</div>
+    </div>
+  </section>
+
+  <section class="guide-section">
+    <h2>Gallery cards — three interaction types</h2>
+    <div class="guide-desc">All three use the same .card / .tape / .cat-flag / .thumb / h3 / .role markup — only the wrapper's attributes change what a click does.</div>
+    <div class="grid" style="grid-template-columns:repeat(3,200px)">
+      <div class="card"><div class="tape"></div><div class="cat-flag">Feature</div><div class="thumb feature" style="font-size:10px">icon or photo</div><h3>1. Page</h3><div class="role">&lt;a href="/projects/x.html"&gt; — links to a real page</div></div>
+      <div class="card"><div class="tape"></div><div class="cat-flag">VFX</div><div class="thumb vfx" style="font-size:10px">icon or photo</div><h3>2. Link</h3><div class="role">&lt;a href="external url" target="_blank"&gt;</div></div>
+      <div class="card"><div class="tape"></div><div class="cat-flag">Game</div><div class="thumb games" style="font-size:10px">icon or photo</div><h3>3. Lightbox</h3><div class="role">&lt;a data-lightbox data-title data-desc data-video data-link&gt;</div></div>
+    </div>
+    <span class="spec-label" style="margin-top:14px;display:block">Real photo thumbnail: &lt;div class="thumb photo"&gt;&lt;img src="/images/thumbs/x.jpg" loading="lazy"&gt;&lt;/div&gt; — no photo yet? Use &lt;div class="thumb [category]"&gt;&lt;svg&gt;&lt;use href="#ic-..."/&gt;&lt;/svg&gt;&lt;/div&gt; instead.</span>
+  </section>
+
+  <section class="guide-section">
+    <h2>Lightbox</h2>
+    <div class="guide-desc">One shared overlay lives once in index.html (id="lightbox-overlay"). Any card with data-lightbox opens it. data-video is optional — omit it and the lightbox just shows the description + link, no empty video box.</div>
+    <div class="demo-row">
+      <a class="card" data-lightbox data-title="Example" data-desc="This is the description text." data-video="" data-link="https://example.com" data-link-label="IMDb" style="max-width:200px">
+        <div class="tape"></div><div class="cat-flag">Feature</div>
+        <div class="thumb feature"><svg><use href="#ic-star"/></svg></div>
+        <h3>Click me</h3><div class="role">try it</div>
+      </a>
+      <span class="spec-label" style="align-self:center">data-title · data-desc · data-video (optional) · data-link (optional) · data-link-label · data-pin (optional, "2"/"3"/"4" — background variant, see below)</span>
+    </div>
+  </section>
+
+  <section class="guide-section">
+    <h2>Video / reel card</h2>
+    <div class="guide-desc">Same wrapper for the homepage reel, a project's main trailer, and a second showcase video. First video on a project page: margin-top:24px. A second one below it: margin-top:40px (see ttvr.html for both).</div>
+    <div class="screen" style="margin:0;max-width:420px">
+      <div class="paper-scrap"></div>
+      <div class="reel-card">
+        <div class="tape"></div><div class="tape right"></div>
+        <div class="screen-frame"><div class="placeholder-video">video embed goes here<br>(YouTube or Vimeo iframe)</div></div>
+        <div class="reel-caption">caption — hit play! ▶</div>
+      </div>
+    </div>
+    <span class="spec-label" style="margin-top:12px">.screen &gt; .paper-scrap + .reel-card (add .flip on a second video for an alternating rotation)</span>
+  </section>
+
+  <section class="guide-section">
+    <h2>Credit card + handwritten highlight</h2>
+    <div class="guide-desc">Now centered (box + text). Use for the "my role on this project" paragraph, one short handwritten aside underneath — max one per page.</div>
+    <div class="credit-card" style="max-width:420px;margin-left:0;margin-right:0">
+      <p>Short paragraph describing your specific role and contribution on the project.</p>
+      <div class="handwritten-highlight">a personal note.</div>
+    </div>
+  </section>
+
+  <section class="guide-section">
+    <h2>Decorative texture</h2>
+    <div class="guide-desc">Coffee stain, ink blot, crumbs — one or two per page, parent needs position:relative. .coffee-photo is the real scanned coffee ring (mix-blend-mode:overlay) — use it instead of .coffee-stain where you want the authentic look.</div>
+    <div class="demo-row" style="position:relative;height:100px;width:280px">
+      <div class="coffee-stain sm" style="top:0;left:10px"></div>
+      <div class="ink-blot" style="top:10px;left:90px"></div>
+      <div class="crumbs" style="top:30px;left:170px"></div>
+      <span class="spec-label" style="align-self:flex-end">.coffee-stain (+ .sm) · .ink-blot · .crumbs</span>
+    </div>
+    <div class="demo-row" style="position:relative;height:130px;width:150px">
+      <div class="coffee-photo" style="top:0;left:0;width:120px;height:120px"></div>
+      <span class="spec-label" style="align-self:flex-end">.coffee-photo</span>
+    </div>
+  </section>
+
+  <section class="guide-section">
+    <h2>Postcard pin variants</h2>
+    <div class="guide-desc">Add ONE of these classes directly to a .screen wrapper (same div as .paper-scrap + .reel-card) to vary rotation, scrap color/shape, and tape placement together. pin-1 is the default — no class needed. Mix them across a project page.</div>
+    <div class="demo-row">
+      <div class="screen" style="margin:0;width:150px"><div class="paper-scrap"></div><div class="reel-card" style="padding:8px"><div class="tape"></div><div class="tape right"></div><div class="screen-frame" style="aspect-ratio:1/1"></div></div><span class="spec-label">pin-1 (default)</span></div>
+      <div class="screen pin-2" style="margin:0;width:150px"><div class="paper-scrap"></div><div class="reel-card" style="padding:8px"><div class="tape"></div><div class="tape right"></div><div class="screen-frame" style="aspect-ratio:1/1"></div></div><span class="spec-label">pin-2</span></div>
+      <div class="screen pin-3" style="margin:0;width:150px"><div class="paper-scrap"></div><div class="reel-card" style="padding:8px"><div class="tape"></div><div class="tape right"></div><div class="screen-frame" style="aspect-ratio:1/1"></div></div><span class="spec-label">pin-3</span></div>
+      <div class="screen pin-4" style="margin:0;width:150px"><div class="paper-scrap"></div><div class="reel-card" style="padding:8px"><div class="tape"></div><div class="tape right"></div><div class="screen-frame" style="aspect-ratio:1/1"></div></div><span class="spec-label">pin-4</span></div>
+    </div>
+  </section>
+
+  <section class="guide-section">
+    <h2>Mobile menu</h2>
+    <div class="guide-desc">Below 640px the nav becomes an off-canvas panel toggled by .menu-toggle (☰). Nothing to add per page — it's wired centrally in include.js. Try narrowing this window.</div>
+  </section>
+
+  <section class="guide-section">
+    <h2>New project page checklist</h2>
+    <div class="guide-desc">Copy /projects/ttvr.html as a starting point (or neil.html for a page with no real video yet), then:</div>
+    <ol style="padding-left:20px;font-size:14.5px;line-height:2">
+      <li>Update &lt;title&gt;</li>
+      <li>Keep both &lt;div data-include&gt; placeholders and the /assets/notebook.css + /assets/include.js links</li>
+      <li>h1 + .project-meta tape-labels (category · studio · project type)</li>
+      <li>.screen (margin-top:24px) + .reel-card for the main video or a placeholder still image</li>
+      <li>.prose for the description, .credit-card for your role</li>
+      <li>Add a card to index.html's .grid: &lt;a class="card" data-cat="..." href="/projects/your-file.html"&gt;</li>
+    </ol>
+  </section>
+
+</div>
+
+<div data-include="/partials/footer.html"></div>
+
+<script src="/assets/include.js"></script>
+
+</body>
+</html>
