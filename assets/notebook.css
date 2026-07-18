@@ -1,0 +1,298 @@
+/* ==========================================================================
+   notebook.css — shared design system for martinposta.com
+   Used by index.html AND every /projects/*.html page (and style-guide.html).
+   Change something here, it updates everywhere — that's the whole point.
+   ========================================================================== */
+
+:root{
+  --bg:#f5f6f3; --grid:#c7d6ce; --card:#fffdf7; --ink:#1f2421; --ink-dim:#5b6259;
+  --feature:#2c5f8a; --feature-bg:#e3edf5;
+  --vfx:#b23a2e; --vfx-bg:#f7e8e6;
+  --games:#3f7d4a; --games-bg:#e6f0e8;
+  --shorts:#6b4c8a; --shorts-bg:#ece1f2;
+  --scrap:#e9dfc4; --tape:rgba(255,220,120,.55);
+  --kraft:#efe3c6;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+[id]{scroll-margin-top:88px}
+body{
+  background:linear-gradient(var(--grid) 1px, transparent 1px);
+  background-size:100% 32px;background-color:var(--bg);color:var(--ink);
+  font-family:'Work Sans',sans-serif;line-height:1.6;font-size:16px;
+  padding-left:68px;
+}
+a{color:inherit;text-decoration:none}
+.wrap{max-width:880px;margin:0 auto;padding:0 32px}
+svg{display:block}
+
+/* spiral binding + red margin rule, notebook-style, on every page */
+.spine{position:fixed;top:0;left:0;bottom:0;width:34px;background:var(--bg);
+  background-image:radial-gradient(circle, var(--card) 4px, transparent 4.5px);
+  background-size:34px 32px;background-position:17px 16px;
+  border-right:1px solid var(--grid);z-index:5}
+.margin-rule{position:fixed;top:0;bottom:0;left:52px;width:1px;background:var(--vfx);opacity:.45;z-index:4}
+
+/* sticky header, styled like a torn strip of paper pinned at the top */
+header{
+  position:sticky;top:0;z-index:20;
+  background:var(--card);
+  padding:18px 0;
+  box-shadow:0 2px 4px rgba(0,0,0,.05);
+}
+.header-inner{
+  max-width:880px;margin:0 auto;padding:0 32px;
+  display:flex;justify-content:space-between;align-items:center;
+}
+body.is-home .logo{display:none}
+body.is-home .header-inner{justify-content:flex-end}
+header::after{
+  content:"";position:absolute;left:0;right:0;bottom:-9px;height:11px;
+  background:var(--card);
+  clip-path:polygon(0 0,3% 100%,6% 15%,9% 100%,12% 20%,15% 100%,18% 10%,21% 100%,24% 18%,27% 100%,30% 12%,33% 100%,36% 20%,39% 100%,42% 14%,45% 100%,48% 18%,51% 100%,54% 12%,57% 100%,60% 20%,63% 100%,66% 14%,69% 100%,72% 18%,75% 100%,78% 12%,81% 100%,84% 20%,87% 100%,90% 14%,93% 100%,96% 18%,100% 100%,100% 0);
+}
+.logo{font-family:'Special Elite',monospace;font-size:17px}
+nav{display:flex;gap:20px;align-items:center;font-family:'Special Elite',monospace;
+  font-size:14px;font-weight:700;color:var(--ink-dim);text-transform:uppercase;letter-spacing:.04em}
+nav a:hover{color:var(--feature)}
+.nav-sep{color:var(--grid)}
+.menu-toggle{display:none;background:none;border:none;cursor:pointer;
+  font-family:'Special Elite',monospace;font-size:22px;color:var(--ink);line-height:1;padding:4px}
+
+@media (max-width:640px){
+  .menu-toggle{display:block}
+  body.is-home .header-inner{justify-content:space-between}
+  nav{
+    position:fixed;top:0;right:-100%;bottom:0;width:72%;max-width:280px;
+    background:var(--card);flex-direction:column;align-items:flex-start;
+    padding:80px 28px 28px;gap:22px;transition:right .25s ease;
+    box-shadow:-3px 0 10px rgba(0,0,0,.15);z-index:30;font-size:16px;
+  }
+  nav.open{right:0}
+  .nav-sep{display:none}
+}
+
+.tape-label{display:inline-block;background:#141414;color:#fff;font-family:'Special Elite',monospace;
+  font-size:12.5px;text-transform:uppercase;letter-spacing:.08em;padding:5px 12px;}
+.tape-label.accent{background:var(--vfx)}
+.tape-label.blue{background:var(--feature)}
+
+.hero{padding:56px 0 32px;position:relative}
+.hero h1{font-family:'Special Elite',monospace;font-size:clamp(40px,7.5vw,66px);line-height:1.05;
+  text-shadow:1.5px 0 rgba(178,58,46,.35)}
+.hero .note{font-family:'Reenie Beanie',cursive;font-size:30px;color:var(--vfx);
+  transform:rotate(-2deg);display:inline-block;margin:10px 0 16px}
+.aside-note{display:inline-block;background:var(--tape);border:1px solid rgba(0,0,0,.08);
+  font-family:'Reenie Beanie',cursive;font-size:20px;color:var(--ink);padding:6px 14px 8px;
+  transform:rotate(2.5deg);margin-left:14px;box-shadow:1px 2px 3px rgba(0,0,0,.08)}
+
+.screen{position:relative;margin:64px 0 56px}
+.paper-scrap{position:absolute;top:-12px;left:-14px;right:-10px;bottom:-16px;background:var(--scrap);
+  transform:rotate(-2.1deg);z-index:0;box-shadow:1px 2px 4px rgba(0,0,0,.1);
+  clip-path:polygon(0 0,100% 0,100% 88%,96% 100%,92% 87%,88% 100%,84% 88%,80% 100%,76% 87%,72% 100%,68% 88%,64% 100%,60% 87%,56% 100%,52% 88%,48% 100%,44% 87%,40% 100%,36% 88%,32% 100%,28% 87%,24% 100%,20% 88%,16% 100%,12% 87%,8% 100%,4% 88%,0 100%)}
+.reel-card{position:relative;z-index:1;background:var(--card);border:1px solid var(--grid);
+  padding:16px;transform:rotate(.9deg);box-shadow:2px 3px 0 rgba(0,0,0,.08)}
+.reel-card.flip{transform:rotate(-.8deg)}
+.reel-card .tape{position:absolute;top:-10px;left:44px;transform:rotate(-3deg);width:58px;height:20px;
+  background:var(--tape);border:1px solid rgba(0,0,0,.06)}
+.reel-card .tape.right{left:auto;right:40px;top:-9px;transform:rotate(4deg)}
+.screen-frame{border:2px solid var(--ink);background:#000;aspect-ratio:16/9}
+.screen-frame iframe{width:100%;height:100%;border:0;display:block}
+.reel-caption{margin-top:12px;font-family:'Reenie Beanie',cursive;font-size:22px;color:var(--ink-dim);
+  transform:rotate(-.6deg)}
+
+/* ---- Postcard "pin" variants ----------------------------------------
+   Add ONE of these classes to the .screen wrapper (the same div that
+   holds .paper-scrap + .reel-card) to vary rotation, scrap paper color/
+   shape, and tape placement all together. pin-1 = default, no class
+   needed. Mix them across a project page so photos/videos don't all
+   look identical. See style-guide.html for a live example of each. */
+
+.screen.pin-2 .paper-scrap{
+  background:#dbe3e6;transform:rotate(2.6deg);
+  clip-path:polygon(0 0,100% 0,100% 92%,94% 100%,88% 90%,82% 100%,76% 90%,70% 100%,64% 90%,58% 100%,52% 90%,46% 100%,40% 90%,34% 100%,28% 90%,22% 100%,16% 90%,10% 100%,4% 90%,0 100%);
+}
+.screen.pin-2 .reel-card{transform:rotate(-1.4deg)}
+.screen.pin-2 .reel-card .tape{left:50%;top:-10px;transform:translateX(-50%) rotate(-4deg);width:76px;
+  background:rgba(160,196,214,.55)}
+.screen.pin-2 .reel-card .tape.right{display:none}
+
+.screen.pin-3 .paper-scrap{background:#f2dbd9;transform:rotate(-1.8deg)}
+.screen.pin-3 .reel-card{transform:rotate(1.7deg)}
+.screen.pin-3 .reel-card .tape{top:-10px;left:28px;transform:rotate(-6deg)}
+.screen.pin-3 .reel-card .tape.right{top:auto;bottom:-10px;left:auto;right:32px;transform:rotate(9deg)}
+
+.screen.pin-4 .paper-scrap{
+  background:#dfe8db;transform:rotate(3.2deg);
+  clip-path:polygon(0 0,100% 0,100% 85%,97% 100%,94% 82%,91% 100%,88% 84%,85% 100%,82% 83%,79% 100%,76% 85%,73% 100%,70% 82%,67% 100%,64% 84%,61% 100%,58% 83%,55% 100%,52% 85%,49% 100%,46% 82%,43% 100%,40% 84%,37% 100%,34% 83%,31% 100%,28% 85%,25% 100%,22% 82%,19% 100%,16% 84%,13% 100%,10% 83%,7% 100%,4% 85%,0 100%);
+}
+.screen.pin-4 .reel-card{transform:rotate(-.5deg)}
+.screen.pin-4 .reel-card .tape{display:none}
+.screen.pin-4 .reel-card .tape.right{right:26px;top:-11px;width:78px;transform:rotate(6deg);
+  background:rgba(222,170,190,.55)}
+
+section.board{padding:40px 0 40px;position:relative}
+.section-head{display:flex;align-items:baseline;gap:14px;margin-bottom:6px;flex-wrap:wrap}
+.section-head h2{font-family:'Special Elite',monospace;font-size:23px}
+
+.tabs{display:flex;gap:8px;margin:24px 0 32px;flex-wrap:wrap}
+.tab{font-family:'Special Elite',monospace;font-size:12.5px;text-transform:uppercase;letter-spacing:.06em;
+  color:#fff;background:#141414;padding:7px 15px;cursor:pointer;border:none}
+.tab.active{background:var(--vfx)}
+
+.grid{display:grid;grid-template-columns:repeat(3,1fr);gap:26px 18px}
+.card{background:var(--card);border:1px solid var(--grid);box-shadow:2px 3px 0 rgba(0,0,0,.06);
+  padding:14px;position:relative;display:block;cursor:pointer}
+.card:nth-child(3n+1){transform:rotate(-1.4deg)}
+.card:nth-child(3n+2){transform:rotate(0.8deg)}
+.card:nth-child(3n+3){transform:rotate(-0.4deg)}
+.card .tape{position:absolute;top:-9px;left:50%;transform:translateX(-50%) rotate(-2deg);width:52px;height:18px;
+  background:var(--tape);border:1px solid rgba(0,0,0,.06)}
+.card .cat-flag{position:absolute;top:10px;right:10px;background:#141414;color:#fff;
+  font-family:'Special Elite',monospace;font-size:10.5px;text-transform:uppercase;letter-spacing:.06em;
+  padding:3px 7px;z-index:2}
+.thumb{aspect-ratio:1/1;display:flex;align-items:center;justify-content:center;margin-bottom:10px;
+  position:relative;overflow:hidden}
+.thumb.feature{background:var(--feature-bg);color:var(--feature)}
+.thumb.vfx{background:var(--vfx-bg);color:var(--vfx)}
+.thumb.games{background:var(--games-bg);color:var(--games)}
+.thumb.shorts{background:var(--shorts-bg);color:var(--shorts)}
+.thumb svg{width:38%;height:38%}
+.thumb.photo img{width:100%;height:100%;object-fit:cover;display:block}
+.scribble{position:absolute;inset:-10%;pointer-events:none}
+.card h3{font-family:'Special Elite',monospace;font-size:15.5px;line-height:1.35}
+.card .role{font-size:13px;color:var(--ink-dim);margin-top:5px;font-family:'Work Sans',sans-serif}
+.fave-tag{position:absolute;bottom:6px;right:8px;font-family:'Reenie Beanie',cursive;font-size:18px;
+  color:var(--vfx);transform:rotate(-4deg);z-index:2}
+
+.more-note{text-align:center;padding:36px 0 8px;font-family:'Special Elite',monospace;font-size:12.5px;color:var(--ink-dim)}
+.more-note a{color:var(--feature);border-bottom:1px solid var(--feature)}
+
+/* footer — different paper: warm kraft tone, torn top edge */
+footer{
+  position:relative;
+  background:var(--kraft);
+  margin-top:80px;
+  padding:56px 0 48px;
+}
+footer::before{
+  content:"";position:absolute;left:0;right:0;top:-13px;height:15px;
+  background:var(--kraft);
+  clip-path:polygon(0 100%,3% 8%,6% 92%,9% 12%,12% 92%,15% 8%,18% 92%,21% 14%,24% 92%,27% 8%,30% 92%,33% 14%,36% 92%,39% 8%,42% 92%,45% 14%,48% 92%,51% 8%,54% 92%,57% 14%,60% 92%,63% 8%,66% 92%,69% 14%,72% 92%,75% 8%,78% 92%,81% 14%,84% 92%,87% 8%,90% 92%,93% 14%,96% 92%,100% 8%,100% 100%);
+}
+.slate{display:grid;grid-template-columns:1fr 1fr;gap:24px;font-size:14px}
+.slate-label{margin-bottom:8px}
+.foot-links{display:flex;gap:16px;margin-top:6px}
+.foot-links a{color:var(--ink-dim)}
+.foot-links a:hover{color:var(--feature)}
+.copyright{margin-top:26px;font-size:12px;color:var(--ink-dim);font-family:'Special Elite',monospace}
+#email-slot a{color:var(--ink);border-bottom:1px solid var(--ink-dim)}
+#email-slot a:hover{color:var(--feature);border-color:var(--feature)}
+
+/* ---- project detail pages only ---- */
+.back-link{display:inline-block;font-family:'Special Elite',monospace;font-size:13.5px;
+  color:var(--ink-dim);margin-bottom:28px}
+.back-link:hover{color:var(--vfx)}
+.project-meta{display:flex;gap:8px;flex-wrap:wrap;margin:18px 0 28px}
+.prose{max-width:none}
+.prose p{font-size:16.5px;margin-bottom:16px}
+.prose.tight p{margin-bottom:6px}
+.credit-card{background:var(--card);border:1px solid var(--grid);padding:20px 22px;margin:36px auto;
+  box-shadow:2px 3px 0 rgba(0,0,0,.06);transform:rotate(-.6deg);max-width:64ch;text-align:center}
+.credit-card p{font-size:15.5px}
+.handwritten-highlight{font-family:'Reenie Beanie',cursive;font-size:23px;color:var(--vfx);
+  transform:rotate(-1.2deg);display:inline-block;margin-top:6px}
+
+/* coffee ring stain — decorative, place anywhere with inline top/left/right/bottom */
+.coffee-stain{
+  position:absolute;width:150px;height:150px;
+  border-radius:46% 54% 61% 39% / 45% 41% 59% 55%;
+  border:3px solid rgba(120,72,32,.16);
+  pointer-events:none;z-index:0;
+}
+.coffee-stain::before{
+  content:"";position:absolute;inset:-10px;border-radius:inherit;
+  border:2px solid rgba(120,72,32,.09);
+}
+.coffee-stain.sm{width:84px;height:84px}
+
+/* real coffee-ring photo texture — replaces the generated .coffee-stain
+   where you want the authentic look. mix-blend-mode:overlay lets the
+   white background of the PNG merge into the paper instead of sitting
+   on top as a flat white square. If it looks too faint/harsh on your
+   screen, mix-blend-mode:multiply is the classic alternative — it kills
+   the white background more aggressively, try both and see. */
+.coffee-photo{
+  position:absolute;width:300px;height:300px;
+  background-image:url('/images/texture/coffee_circle.png');
+  background-size:contain;background-repeat:no-repeat;
+  mix-blend-mode:multiply;opacity:.9;
+  pointer-events:none;z-index:0;
+}
+
+/* ink blot + crumbs — small "lived in" texture, use sparingly */
+.ink-blot{
+  position:absolute;width:60px;height:46px;
+  background:rgba(30,30,35,.09);
+  border-radius:58% 42% 51% 49% / 47% 55% 45% 53%;
+  pointer-events:none;z-index:0;
+}
+.ink-blot::after{
+  content:"";position:absolute;width:8px;height:8px;background:rgba(30,30,35,.09);
+  border-radius:50%;top:118%;left:28%;
+}
+.crumbs{
+  position:absolute;width:50px;height:30px;pointer-events:none;z-index:0;
+  background-image:
+    radial-gradient(circle, rgba(120,90,50,.4) 1.4px, transparent 1.8px),
+    radial-gradient(circle, rgba(120,90,50,.35) 1.1px, transparent 1.5px),
+    radial-gradient(circle, rgba(120,90,50,.3) 1.3px, transparent 1.7px),
+    radial-gradient(circle, rgba(120,90,50,.4) 1px, transparent 1.4px),
+    radial-gradient(circle, rgba(120,90,50,.3) 1.2px, transparent 1.6px);
+  background-repeat:no-repeat;
+  background-position: 6px 8px, 22px 4px, 38px 14px, 14px 22px, 32px 24px;
+}
+
+/* ---- lightbox (video + links + description) ---- */
+/* Structure: overlay > lightbox-frame (plain wrapper, sized BY its content —
+   same pattern as .screen/.reel-card, which already works) > paper-scrap +
+   lightbox-box (paper, tape, close button — never scrolls) > lightbox-scroll
+   (only THIS scrolls, so the close button can never get clipped). */
+.lightbox-overlay{
+  position:fixed;inset:0;background:rgba(20,18,16,.72);
+  display:none;align-items:center;justify-content:center;z-index:100;padding:28px;
+}
+.lightbox-overlay.open{display:flex}
+.lightbox-frame{
+  position:relative;
+}
+.lightbox-frame .paper-scrap{top:-10px;left:-12px;right:-8px;bottom:-14px}
+.lightbox-box{
+  position:relative;width:min(760px,90vw);max-height:82vh;
+  background:var(--card);border:1px solid var(--grid);
+  box-shadow:3px 5px 0 rgba(0,0,0,.18);transform:rotate(-.4deg);
+  display:flex;flex-direction:column;overflow:hidden;
+}
+.lightbox-box .tape{position:absolute;top:-10px;left:50px;transform:rotate(-3deg);width:58px;height:20px;
+  background:var(--tape);border:1px solid rgba(0,0,0,.06);z-index:2}
+.lightbox-box .tape.right{left:auto;right:46px;top:-9px;transform:rotate(4deg)}
+.lightbox-close{
+  position:absolute;top:14px;right:14px;width:34px;height:34px;border-radius:50%;
+  background:#141414;color:#fff;border:2px solid var(--card);font-family:'Special Elite',monospace;
+  font-size:15px;cursor:pointer;z-index:3;flex-shrink:0;
+}
+.lightbox-scroll{overflow-y:auto;overflow-x:hidden;padding:30px}
+.lightbox-video-wrap{aspect-ratio:16/9;background:#000;margin-bottom:18px;border:2px solid var(--ink)}
+.lightbox-video-wrap iframe{width:100%;height:100%;border:0;display:block}
+.lightbox-box h3{font-family:'Special Elite',monospace;font-size:22px;margin-bottom:10px}
+.lightbox-box p{font-size:15.5px;color:var(--ink-dim);margin-bottom:18px}
+.lightbox-links{display:flex;gap:10px;flex-wrap:wrap;justify-content:center}
+
+/* Lightbox background variants — same idea as the .screen pin variants,
+   but simpler: only the paper-scrap's color + rotation change, the white
+   box/tape stay put. Set via data-pin="2/3/4" on the triggering card;
+   include.js applies the matching class to .lightbox-frame when it opens.
+   No data-pin = default (tan, same as pin-1 elsewhere). */
+.lightbox-frame.pin-2 .paper-scrap{background:#dbe3e6;transform:rotate(2.6deg)}
+.lightbox-frame.pin-3 .paper-scrap{background:#f2dbd9;transform:rotate(-1.8deg)}
+.lightbox-frame.pin-4 .paper-scrap{background:#dfe8db;transform:rotate(3.2deg)}
