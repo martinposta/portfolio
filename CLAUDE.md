@@ -112,3 +112,7 @@ identical after the fix.
 - Claude Code sessions opened from another project keep that project's
   `.claude/launch.json` for the preview tool — open a session in this folder
   to use the `site`/`admin` configs.
+- **Every clone needs `git config user.email 33331553+martinposta@users.noreply.github.com`.**
+  The GitHub account blocks pushes that would publish the private address
+  (GH007), and the admin's publish would fail on its push step. Set on the
+  Mac 2026-09-27; do the same on the Windows and Proxmox copies.
