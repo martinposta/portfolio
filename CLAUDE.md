@@ -11,12 +11,14 @@ the files as they are.
 ```
 site/        everything GitHub Pages publishes — nothing else goes live
   index.html        homepage; the gallery grid between ADMIN:GRID markers is generated
-  projects/*.html   one page per project (hand-written today, generated later)
+  projects/*.html   one page per project, GENERATED from content/pages/*.json
+  images/doodles/   drawings for the doodle block (svg/png/gif/webm)
   assets/           notebook.css (whole design system), include.js
   partials/         header/footer, injected by include.js
   images/           thumbs/, projects/, texture/
   CNAME, posta_resume.pdf
-content/     source data the admin edits (projects.json = gallery cards)
+content/     source data the admin edits: projects.json (gallery cards),
+             pages/<slug>.json (project pages as block lists)
 admin/       local Node admin tool (zero dependencies)
 design/      working files that must not be published (style guide, .afpub)
 ```
@@ -89,7 +91,7 @@ identical after the fix.
    JPEG where the browser cannot encode WebP), uploads never silently
    overwrite, server validates category / links / page paths / icons / video
    links, pasted Vimeo/YouTube page links become player URLs.
-5. Project pages as block lists in `content/pages/*.json`, generated into
+5. ✅ (branch pages-editor, awaiting Martin's review) Project pages as block lists in `content/pages/*.json`, generated into
    `site/projects/*.html` (block types: text, heading, video, photos, buttons,
    credit card, doodle). Concept: https://claude.ai/artifact/3kHaqxoY8cHXLV2eqHT4FR
    (gallery concept: https://claude.ai/artifact/UVrxmPhpBE4NFG1cwrtUBK).
@@ -135,3 +137,26 @@ identical after the fix.
   The GitHub account blocks pushes that would publish the private address
   (GH007), and the admin's publish would fail on its push step. Set on the
   Mac 2026-09-27; do the same on the Windows and Proxmox copies.
+
+## Project pages (`admin/lib/pages.js`, admin tab "Project pages")
+
+- `content/pages/<slug>.json` → `site/projects/<slug>.html`. **Never hand-edit
+  the HTML**: the next publish of that page overwrites it (the file says so
+  in a comment). Blocks: text (normal / tight = one line per paragraph /
+  muted), heading, video, photos, buttons, credit, doodle.
+- The renderer writes the markup the pages were hand-written with; the
+  inline styles each page carried became classes in `notebook.css` (section
+  "generated project pages"). Converting the seven pages kept every URL and
+  sentence; page heights changed by 0–4 %.
+- Paper "auto" hands out pin 1→2→3→4 in turn per page; an explicit choice does
+  not advance the sequence. The converted pages carry their original pins.
+- Inline text: `*italic*`, `[label](https://…)`; everything else is escaped.
+- Draft page (`visible:false`): JSON committed, HTML removed/not written. The
+  server refuses a live card pointing at a draft page, making a page a draft
+  or deleting it while a live card opens it, and any video that is not a
+  Vimeo/YouTube player URL. Address (slug) is locked after first publish.
+- The preview is `renderPage(page, {preview:true})`, which keeps
+  `data-block` markers so clicking in the preview selects the block.
+- Uploads: `POST /api/upload {target: thumbs|projects|doodles}`. Thumbs are
+  shrunk to a 600 px shorter side, project photos to a 1600 px longer side,
+  doodles are uploaded untouched (they may be animated).
