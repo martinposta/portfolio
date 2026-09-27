@@ -1,0 +1,44 @@
+{
+  "slug": "vr",
+  "title": "VR Animation Workshop",
+  "visible": true,
+  "coffee": false,
+  "tags": [
+    {
+      "text": "VR",
+      "color": "black"
+    },
+    {
+      "text": "Workshop",
+      "color": "red"
+    }
+  ],
+  "blocks": [
+    {
+      "type": "text",
+      "style": "normal",
+      "text": "Animating in VR? Why not! The idea behind this workshop was to introduce animators a new way how to think about layout, camera work and animation process from a new perspective."
+    },
+    {
+      "type": "video",
+      "url": "https://player.vimeo.com/video/315774107",
+      "caption": "",
+      "paper": "2",
+      "tilt": "normal"
+    },
+    {
+      "type": "video",
+      "url": "https://player.vimeo.com/video/315774282",
+      "caption": "",
+      "paper": "3",
+      "tilt": "normal"
+    },
+    {
+      "type": "video",
+      "url": "https://player.vimeo.com/video/315774759",
+      "caption": "",
+      "paper": "4",
+      "tilt": "normal"
+    }
+  ]
+}

@@ -1,0 +1,97 @@
+{
+  "slug": "figurespacing",
+  "title": "Figure Spacing",
+  "visible": true,
+  "coffee": false,
+  "tags": [
+    {
+      "text": "Short Film",
+      "color": "black"
+    },
+    {
+      "text": "School project",
+      "color": "red"
+    }
+  ],
+  "blocks": [
+    {
+      "type": "text",
+      "style": "normal",
+      "text": "Back in 2012, I started working on a short graduation film with my friend Ondřej Slavík, called Figure Spacing. We both loved puppet films (and we still do) so we decided to make our own. We didn't know how to make one but we wanted to try anyway. We split the making process — Ondřej did all the analog part (making puppets, physical sets…), I did the digital part (digital assets, postproduction, edit…).\n\nYet we didn't plan to do just the movie! Oh boy no, that wouldn't be enough! I also wanted to make a lot of other materials to help promote the film — like posters, postcards, a webpage, a flash game! Well, as you may have guessed, apart from all of the promo materials, the movie was sadly never finished."
+    },
+    {
+      "type": "heading",
+      "text": "1st minute of the movie — full CG"
+    },
+    {
+      "type": "video",
+      "url": "https://player.vimeo.com/video/263646019?h=a448be92c3&title=0&byline=0&portrait=0",
+      "caption": "watch the opening minute ▶",
+      "paper": "1",
+      "tilt": "normal"
+    },
+    {
+      "type": "heading",
+      "text": "Postproduction test"
+    },
+    {
+      "type": "video",
+      "url": "https://player.vimeo.com/video/263649145?h=a448be92c3&title=0&byline=0&portrait=0",
+      "caption": "postproduction test ▶",
+      "paper": "2",
+      "tilt": "flip"
+    },
+    {
+      "type": "heading",
+      "text": "Flash point-and-click \"adventure\" game"
+    },
+    {
+      "type": "text",
+      "style": "normal",
+      "text": "That was complete. With a story and everything. I even programmed a working snake Gameboy if you for some reason don't want to play the story."
+    },
+    {
+      "type": "photos",
+      "fit": "crop",
+      "paper": "auto",
+      "items": [
+        {
+          "src": "/images/projects/figurespacing_game_1.jpg",
+          "alt": "Figure Spacing — behind the scenes",
+          "caption": "",
+          "paper": "1"
+        },
+        {
+          "src": "/images/projects/figurespacing_game_2.jpg",
+          "alt": "Figure Spacing — behind the scenes",
+          "caption": "",
+          "paper": "3"
+        },
+        {
+          "src": "/images/projects/figurespacing_game_3.jpg",
+          "alt": "Figure Spacing — behind the scenes",
+          "caption": "",
+          "paper": "4"
+        },
+        {
+          "src": "/images/projects/figurespacing_game_4.jpg",
+          "alt": "Figure Spacing — behind the scenes",
+          "caption": "",
+          "paper": "2"
+        },
+        {
+          "src": "/images/projects/figurespacing_shooting_1.jpg",
+          "alt": "Figure Spacing — behind the scenes",
+          "caption": "",
+          "paper": "1"
+        },
+        {
+          "src": "/images/projects/figurespacing_shooting_2.jpg",
+          "alt": "Figure Spacing — behind the scenes",
+          "caption": "",
+          "paper": "2"
+        }
+      ]
+    }
+  ]
+}

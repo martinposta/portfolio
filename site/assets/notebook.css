@@ -325,3 +325,22 @@ body{overflow-wrap:break-word}
 @media (prefers-reduced-motion:reduce){
   nav,nav.open{transition:none}
 }
+
+/* ---- generated project pages (admin/lib/pages.js) -------------------
+   The markup is the hand-written one; these replace the inline styles the
+   hand-written pages carried on every element. */
+.project-page .screen{margin-top:24px}
+.block-head{margin-top:36px}
+.link-row{display:flex;gap:10px;flex-wrap:wrap;margin:14px 0 36px}
+.prose.muted p{color:var(--ink-dim);font-size:14.5px}
+.screen-frame > img{width:100%;height:100%;object-fit:cover;display:block}
+/* "whole image": the frame follows the photo instead of forcing 16:9 */
+.screen-frame.whole{aspect-ratio:auto;background:var(--card)}
+.screen-frame.whole > img{height:auto;object-fit:contain}
+.more-note{padding-top:8px}
+/* doodles: drawings in images/doodles/, static (svg/png) or looping (webm) */
+.doodle{position:relative;margin:8px 0;pointer-events:none}
+.doodle img,.doodle video{width:100%;height:auto;display:block}
+.doodle-right{margin-left:auto;transform:rotate(3deg)}
+.doodle-left{margin-right:auto;transform:rotate(-4deg)}
+.doodle-center{margin-left:auto;margin-right:auto}

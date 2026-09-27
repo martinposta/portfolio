@@ -1,0 +1,16 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 120">
+  <!-- Example doodle: a pencil-style ball bounce with squash & stretch.
+       Replace or add your own drawings in this folder (svg, png, webp, gif, webm). -->
+  <style>
+    .b{transform-origin:60px 96px;animation:b 1s cubic-bezier(.5,0,.5,1) infinite}
+    .s{transform-origin:60px 104px;animation:s 1s cubic-bezier(.5,0,.5,1) infinite}
+    @keyframes b{0%,100%{transform:translateY(0) scale(1.25,.75)}10%,90%{transform:translateY(-8px) scale(.9,1.12)}50%{transform:translateY(-70px) scale(1,1)}}
+    @keyframes s{0%,100%{transform:scale(1);opacity:.5}50%{transform:scale(.45);opacity:.2}}
+    @media (prefers-reduced-motion:reduce){.b,.s{animation:none}}
+  </style>
+  <ellipse class="s" cx="60" cy="104" rx="20" ry="4" fill="#1f2421" opacity=".35"/>
+  <g class="b">
+    <circle cx="60" cy="84" r="12" fill="none" stroke="#1f2421" stroke-width="2.4"/>
+    <path d="M52 80c3-3 8-4 12-2" fill="none" stroke="#1f2421" stroke-width="1.6" stroke-linecap="round"/>
+  </g>
+</svg>

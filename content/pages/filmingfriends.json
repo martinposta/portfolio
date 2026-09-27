@@ -1,0 +1,37 @@
+{
+  "slug": "filmingfriends",
+  "title": "Making movies with Friends",
+  "visible": true,
+  "coffee": false,
+  "tags": [
+    {
+      "text": "Friends",
+      "color": "black"
+    },
+    {
+      "text": "personal animation tests",
+      "color": "red"
+    }
+  ],
+  "blocks": [
+    {
+      "type": "text",
+      "style": "normal",
+      "text": "Animation tests"
+    },
+    {
+      "type": "video",
+      "url": "https://player.vimeo.com/video/312291815",
+      "caption": "",
+      "paper": "2",
+      "tilt": "normal"
+    },
+    {
+      "type": "video",
+      "url": "https://player.vimeo.com/video/312291486",
+      "caption": "",
+      "paper": "1",
+      "tilt": "normal"
+    }
+  ]
+}

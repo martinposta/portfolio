@@ -1,0 +1,64 @@
+{
+  "slug": "plodymraku",
+  "title": "Plody mraků",
+  "visible": true,
+  "coffee": false,
+  "tags": [
+    {
+      "text": "Short Film",
+      "color": "black"
+    },
+    {
+      "text": "Responsible for rigging and animation.",
+      "color": "red"
+    }
+  ],
+  "blocks": [
+    {
+      "type": "text",
+      "style": "normal",
+      "text": "V noře na mýtině, obklopené ze všech stran temným lesem, žije spolu s tlupou druhů Chlupáč. Jejich jedinou potravou jsou oranžová semínka, ze kterých se při dopadu na zem stávají velké svíticí plody. Přilétají však jen zřídka. Strach z lesa zvířátkům brání opustit ztísněný prostor mýtiny a hledat lepší místo k životu. Proto raději jen odevzdaně pozorují oblohu a čekají, až jim sešle další várku plodů. Chlupáče však věčné čekání nudí. Mýtina je mu malá. Les v něm probouzí zvědavost. Chce vědět, co ukrývá..."
+    },
+    {
+      "type": "video",
+      "url": "https://player.vimeo.com/video/266957830?h=a448be92c3&title=0&byline=0&portrait=0",
+      "caption": "showcase of my animations — hit play! ▶",
+      "paper": "1",
+      "tilt": "normal"
+    },
+    {
+      "type": "buttons",
+      "items": [
+        {
+          "label": "Official site",
+          "url": "https://www.facebook.com/plodymraku/"
+        }
+      ]
+    },
+    {
+      "type": "photos",
+      "fit": "crop",
+      "paper": "auto",
+      "items": [
+        {
+          "src": "/images/projects/plodymraku_1.jpg",
+          "alt": "Plody mraků — screens",
+          "caption": "",
+          "paper": "2"
+        },
+        {
+          "src": "/images/projects/plodymraku_2.jpg",
+          "alt": "Plody mraků — screens",
+          "caption": "",
+          "paper": "4"
+        },
+        {
+          "src": "/images/projects/plodymraku_3.jpg",
+          "alt": "Plody mraků — screens",
+          "caption": "",
+          "paper": "3"
+        }
+      ]
+    }
+  ]
+}

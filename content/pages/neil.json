@@ -1,0 +1,83 @@
+{
+  "slug": "neil",
+  "title": "Neil",
+  "visible": true,
+  "coffee": false,
+  "tags": [
+    {
+      "text": "Short Film",
+      "color": "black"
+    },
+    {
+      "text": "FAMU thesis film",
+      "color": "blue"
+    }
+  ],
+  "blocks": [
+    {
+      "type": "text",
+      "style": "normal",
+      "text": "NEIL is a short animated film created by Martin Pošta as a final bachelor's project on Film Academy of Performing Arts in Prague (FAMU) in the animation department.\n\n*In order to fulfill his dream, Neil The Space Bear lands with his spaceship after a long and stressful journey on an unknown planet. Without knowing what the future holds he sets off for an abandoned city where he may find what he has been looking for for so long…*"
+    },
+    {
+      "type": "video",
+      "url": "https://player.vimeo.com/video/644173320?h=a448be92c3&title=0&byline=0&portrait=0",
+      "caption": "Neil — hit play! ▶",
+      "paper": "1",
+      "tilt": "normal"
+    },
+    {
+      "type": "heading",
+      "text": "Crew"
+    },
+    {
+      "type": "text",
+      "style": "tight",
+      "text": "Created by Martin Pošta\nProduction: Eva Pavlíčková\nCinematographer: Adam Elšík\nEditing: Martin Pošta, Viktor Schwarcz Jr.\nEffects and simulation supervisor: Jakub Špaček\nSound design: Martin Stýblo\nOriginal score: Jakub Kudláč"
+    },
+    {
+      "type": "heading",
+      "text": "Behind the scenes and more"
+    },
+    {
+      "type": "buttons",
+      "items": [
+        {
+          "label": "Press kit (PDF)",
+          "url": "https://www.dropbox.com/s/0aa71d731bhxzyd/NEIL_presKit_eng.pdf?dl=0"
+        }
+      ]
+    },
+    {
+      "type": "photos",
+      "fit": "crop",
+      "paper": "auto",
+      "items": [
+        {
+          "src": "/images/projects/neil_1.jpg",
+          "alt": "NEIL — behind the scenes",
+          "caption": "",
+          "paper": "4"
+        },
+        {
+          "src": "/images/projects/neil_2.jpg",
+          "alt": "NEIL — behind the scenes",
+          "caption": "",
+          "paper": "2"
+        },
+        {
+          "src": "/images/projects/neil_3.jpg",
+          "alt": "NEIL — behind the scenes",
+          "caption": "",
+          "paper": "3"
+        },
+        {
+          "src": "/images/projects/neil_4.jpg",
+          "alt": "NEIL — behind the scenes",
+          "caption": "",
+          "paper": "1"
+        }
+      ]
+    }
+  ]
+}
