@@ -43,6 +43,7 @@
   function refreshCount(){
     var n = diff().length, el = document.getElementById('count');
     el.hidden = !n; el.textContent = n;
+    schedulePreview();
   }
 
   // ---------- loading ----------
@@ -85,7 +86,7 @@
       if (show === 'live' && draft) return;
       if (show === 'draft' && !draft) return;
       var li = document.createElement('li');
-      li.className = 'card-row' + (draft ? ' draft' : '');
+      li.className = 'card-row' + (draft ? ' draft' : '') + (editing && i === editingIndex ? ' editing' : '');
       li.draggable = show === 'all';
       li.innerHTML =
         '<div class="handle">' + (show === 'all' ? '⠿' : '') + '</div>' +
@@ -143,6 +144,7 @@
   }
 
   function openEdit(i){
+    editing = true;
     editingIndex = i;
     var isNew = i === null;
     var card = isNew ? {
@@ -181,12 +183,17 @@
 
     overlay.classList.remove('hidden');
     panel.classList.remove('hidden');
+    renderList();
+    schedulePreview();
   }
 
   function closeEdit(){
     overlay.classList.add('hidden');
     panel.classList.add('hidden');
+    editing = false;
     editingIndex = null;
+    renderList();
+    schedulePreview();
   }
 
   Array.prototype.forEach.call(form.querySelectorAll('input[name=thumbType]'), function(r){
@@ -235,8 +242,9 @@
     return id;
   }
 
-  form.addEventListener('submit', function(ev){
-    ev.preventDefault();
+  // The card as the form describes it right now (also used, unapplied, by
+  // the live preview while typing).
+  function formToCard(){
     var thumbType = form.querySelector('input[name=thumbType]:checked').value;
     var thumb = thumbType === 'photo'
       ? { type: 'photo', src: form.elements.thumbSrc.value.trim(), alt: form.elements.title.value.trim() }
@@ -269,7 +277,13 @@
     };
     // new cards start as drafts; existing ones keep what they had
     if (old ? old.visible === false : true) card.visible = false;
+    return card;
+  }
 
+  form.addEventListener('submit', function(ev){
+    ev.preventDefault();
+    var old = editingIndex === null ? null : cards[editingIndex];
+    var card = formToCard();
     if (old) cards[editingIndex] = card;
     else cards.unshift(card);
 
@@ -277,9 +291,55 @@
     renderList(); refreshCount();
   });
 
+  // ---------- live preview ----------
+  // The real homepage (server-rendered, real notebook.css) with every unsaved
+  // edit in it, including what is typed in the open form before "Apply".
+  // Clicking a card in it opens that card here instead of following it.
+  var editing = false, frame = document.getElementById('pv'), pvTimer = null, pvScroll = null;
+  function previewCards(){
+    if (!editing) return cards;
+    var list = cards.slice(), card = formToCard();
+    if (editingIndex === null) list.unshift(card); else list[editingIndex] = card;
+    return list;
+  }
+  function schedulePreview(){ clearTimeout(pvTimer); pvTimer = setTimeout(renderPreview, 350); }
+  function renderPreview(){
+    try { if (frame.contentWindow && frame.contentWindow.scrollY) pvScroll = frame.contentWindow.scrollY; } catch (e) {}
+    api('/api/preview?embed=1', json('POST', previewCards())).then(function(res){ frame.src = res.url; })
+      .catch(function(e){ setStatus('Preview failed: ' + e.message, 'err'); });
+  }
+  frame.addEventListener('load', function(){
+    var doc = frame.contentDocument; if (!doc) return;
+    var st = doc.createElement('style');
+    st.textContent = '.grid .card{cursor:pointer}.grid .card.admin-editing{outline:3px solid #2c5f8a;outline-offset:6px}';
+    doc.head.appendChild(st);
+    var gridCards = [].slice.call(doc.querySelectorAll('.grid .card'));
+    // the form's card sits at editingIndex, or first when it is a new one
+    var at = editing ? (editingIndex === null ? 0 : editingIndex) : -1;
+    if (gridCards[at]) gridCards[at].classList.add('admin-editing');
+    doc.addEventListener('click', function(e){
+      var el = e.target.closest('.grid .card'); if (!el) return;
+      e.preventDefault(); e.stopPropagation();
+      if (editing && editingIndex === null) return;   // a new card is being written: do not throw it away
+      var i = gridCards.indexOf(el);
+      if (i >= 0 && i < cards.length) openEdit(i);
+    }, true);
+    if (pvScroll === null){ var p = doc.getElementById('portfolio'); pvScroll = p ? p.getBoundingClientRect().top + frame.contentWindow.scrollY - 20 : 0; }
+    frame.contentWindow.scrollTo(0, pvScroll);
+    if (gridCards[at]){ var r = gridCards[at].getBoundingClientRect(); if (r.top < 0 || r.bottom > frame.contentWindow.innerHeight) gridCards[at].scrollIntoView({ block: 'center', behavior: 'smooth' }); }
+  });
+  form.addEventListener('input', schedulePreview);
+  form.addEventListener('change', schedulePreview);
+  [].forEach.call(document.querySelectorAll('.pv-bar .seg button'), function(b){
+    b.addEventListener('click', function(){
+      [].forEach.call(document.querySelectorAll('.pv-bar .seg button'), function(x){ x.setAttribute('aria-pressed', x === b); });
+      document.getElementById('stage').classList.toggle('phone', b.dataset.w === 'phone');
+    });
+  });
+
   document.getElementById('btn-preview').addEventListener('click', function(){
     setStatus('Building preview…');
-    api('/api/preview', json('POST', cards)).then(function(res){
+    api('/api/preview', json('POST', previewCards())).then(function(res){
       window.open(res.url, '_blank');
       setStatus('Preview opened in a new tab (nothing saved)', 'ok');
     }).catch(function(e){ setStatus('Preview failed: ' + e.message, 'err'); });

@@ -6,7 +6,7 @@
 <title>Portfolio Admin</title>
 <link rel="stylesheet" href="/admin/admin.css">
 </head>
-<body>
+<body class="gallery-app">
 
 <header class="topbar">
   <h1>Martin Pošta — Portfolio Admin</h1>
@@ -17,13 +17,14 @@
       <select id="branch"><option>…</option></select>
     </label>
     <span id="repo" class="repo" title="State of this copy against GitHub"><span class="dot"></span><span id="repo-text">checking…</span></span>
-    <button id="btn-preview" class="btn">Preview</button>
     <button id="btn-save" class="btn primary">Save &amp; publish<span id="count" class="count" hidden></span></button>
   </div>
 </header>
 
 <div id="banner" class="banner" hidden></div>
 
+<div class="work gallery-work">
+<section class="list-col" aria-label="Cards">
 <main>
   <div class="toolbar">
     <button id="btn-add" class="btn">+ Add new card</button>
@@ -37,7 +38,7 @@
   <ul id="card-list" class="card-list"></ul>
 </main>
 
-<!-- Edit panel (slides in from the right) -->
+<!-- Edit panel: covers the card list, never the preview -->
 <div id="overlay" class="overlay hidden"></div>
 <aside id="edit-panel" class="edit-panel hidden">
   <div class="edit-panel-head">
@@ -136,6 +137,20 @@
     </div>
   </form>
 </aside>
+</section>
+
+<section class="pv-col" aria-label="Preview">
+  <div class="pv-bar">
+    <span class="pv-url">Homepage with your unsaved edits · drafts dashed · click a card to edit it</span>
+    <div class="seg" role="group" aria-label="Preview width">
+      <button data-w="desk" aria-pressed="true">Desktop</button>
+      <button data-w="phone" aria-pressed="false">Phone</button>
+    </div>
+    <button id="btn-preview" class="btn">Open in new tab</button>
+  </div>
+  <div id="stage" class="pv-stage"><iframe id="pv" title="Homepage preview"></iframe></div>
+</section>
+</div>
 
 <!-- Publish dialog -->
 <div id="pub" class="modal-scrim" hidden>

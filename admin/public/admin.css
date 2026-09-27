@@ -181,3 +181,15 @@ body.pages-app{height:100vh;display:flex;flex-direction:column}
 .branch-pick{display:inline-flex;align-items:center;gap:6px;font-size:12.5px;color:var(--ink-dim)}
 .branch-pick select{font:inherit;font-size:12.5px;padding:4px 6px;border:1px solid var(--line);border-radius:6px;background:#fff;color:var(--ink)}
 .banner a{color:inherit;font-weight:600}
+
+/* ---- gallery: list on the left, live homepage preview on the right ---- */
+body.gallery-app{height:100vh;display:flex;flex-direction:column}
+.gallery-app .banner{margin:10px 22px 0;max-width:none}
+.gallery-work{grid-template-columns:minmax(420px,560px) minmax(0,1fr)}
+.list-col{position:relative;min-height:0;border-right:1px solid var(--line);overflow:hidden}
+.list-col main{height:100%;overflow:auto;max-width:none;margin:0;padding:16px 16px 60px}
+.list-col .toolbar{flex-wrap:wrap;gap:10px}
+.list-col .card-row.editing{border-color:var(--ink);box-shadow:0 2px 8px rgba(0,0,0,.08)}
+.gallery-app .overlay{position:absolute}
+.gallery-app .edit-panel{position:absolute;inset:0;width:auto;box-shadow:none}
+@media (max-width:900px){body.gallery-app{height:auto}.list-col{height:auto;overflow:visible}.list-col main{height:auto}.gallery-app .edit-panel{position:fixed}}

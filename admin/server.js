@@ -203,8 +203,9 @@ function writeFiles(cards) {
   fs.writeFileSync(INDEX_FILE, updated, 'utf8');
 }
 
-function buildPreviewHtml(cards) {
+function buildPreviewHtml(cards, embed) {
   let html = buildUpdatedHtml(cards, { preview: true });
+  if (embed) return html;   // inside the admin's own preview pane: no banner
   const drafts = cards.filter((c) => c.visible === false).length;
   const banner =
     '<div style="position:fixed;top:0;left:0;right:0;z-index:9999;' +
@@ -333,11 +334,12 @@ const server = http.createServer((req, res) => {
     }
 
     if (url === '/api/preview' && req.method === 'POST') {
+      const embed = /[?&]embed=1/.test(req.url);
       return readJSON(res, req, (cards) => {
         if (!Array.isArray(cards)) return send(res, 400, { error: 'expected an array' });
         cleanupPreviews();
         const token = crypto.randomBytes(8).toString('hex');
-        previews.set(token, { html: buildPreviewHtml(cards), createdAt: Date.now() });
+        previews.set(token, { html: buildPreviewHtml(cards, embed), createdAt: Date.now() });
         send(res, 200, { ok: true, url: '/preview/' + token });
       });
     }
