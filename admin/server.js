@@ -14,7 +14,7 @@
  * included (greyed), so unsaved changes can be checked first.
  *
  * Run with:  node server.js   (Mac: start.command, Windows: start.bat)
- * Then open: http://localhost:4173
+ * Then open: http://localhost:4173/admin/  (http://localhost:4173/ is the site)
  *
  * No authentication, so it listens on 127.0.0.1 only. HOST=0.0.0.0 exposes
  * it — do that only behind something that adds a login (see CLAUDE.md).
@@ -55,10 +55,11 @@ const KINDS = ['link', 'page', 'lightbox'];
 // What the lightbox iframe can play. The admin turns pasted page links into these.
 const VIDEO_EMBED = /^https:\/\/(player\.vimeo\.com\/video\/\d+|www\.youtube(-nocookie)?\.com\/embed\/[\w-]{11})([?#].*)?$/;
 
-// Site asset paths (real site files) that the preview page needs to load
-// with the exact same root-relative URLs the live site uses.
-const SITE_STATIC_PREFIXES = ['/assets/', '/partials/', '/images/', '/projects/'];
-const SITE_STATIC_FILES = ['/posta_resume.pdf', '/CNAME'];
+// URL layout: the admin UI lives under /admin/, the API under /api/, previews
+// under /preview/, and EVERYTHING ELSE is the site itself, served from site/.
+// The site links root-relative (/index.html#portfolio, /projects/…), so the
+// site must own the root: while the admin sat at / and /index.html, clicking
+// the menu in a preview opened the admin instead of the homepage.
 
 // In-memory store for unsaved previews, keyed by a random token.
 const PREVIEW_TTL_MS = 30 * 60 * 1000;
@@ -228,12 +229,13 @@ function serveFrom(baseDir, urlPath, res) {
 }
 
 function serveStatic(req, res) {
-  let p = req.url.split('?')[0];
-  if (SITE_STATIC_PREFIXES.some((prefix) => p.startsWith(prefix)) || SITE_STATIC_FILES.includes(p)) {
-    return serveFrom(ROOT, p, res);
+  const p = req.url.split('?')[0];
+  if (p === '/admin') { res.writeHead(302, { Location: '/admin/' }); return res.end(); }
+  if (p.startsWith('/admin/')) {
+    const rest = p.slice('/admin'.length);
+    return serveFrom(PUBLIC_DIR, rest === '/' ? '/index.html' : rest, res);
   }
-  if (p === '/') p = '/index.html';
-  return serveFrom(PUBLIC_DIR, p, res);
+  return serveFrom(ROOT, p === '/' ? '/index.html' : p, res);
 }
 
 const server = http.createServer((req, res) => {
@@ -349,5 +351,5 @@ const server = http.createServer((req, res) => {
 });
 
 server.listen(PORT, HOST, () => {
-  console.log(`\nMartin Pošta portfolio — admin tool\nOpen: http://localhost:${PORT}\nRepo: ${REPO}\n(Ctrl+C to stop)\n`);
+  console.log(`\nMartin Pošta portfolio — admin tool\nOpen: http://localhost:${PORT}/admin/  (the site itself: http://localhost:${PORT}/)\nRepo: ${REPO}\n(Ctrl+C to stop)\n`);
 });

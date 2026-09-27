@@ -305,6 +305,10 @@
     st.textContent = '[data-block]{cursor:pointer;outline:2px solid transparent;outline-offset:10px;transition:outline-color .15s}[data-block]:hover{outline-color:rgba(44,95,138,.25)}[data-block].sel{outline-color:rgba(44,95,138,.75)}';
     doc.head.appendChild(st);
     doc.addEventListener('click', function(e){
+      // links in the preview (menu, back to portfolio, buttons) open the
+      // real page in a new tab instead of replacing the preview
+      var a = e.target.closest('a[href]');
+      if (a && !a.closest('[data-block]') && a.getAttribute('href').charAt(0) !== '#'){ e.preventDefault(); window.open(a.href, '_blank'); return; }
       var el = e.target.closest('[data-block]'); if (!el) return;
       e.preventDefault();
       selB = +el.dataset.block; pickerAt = null; renderEditor(); markPreview(false);

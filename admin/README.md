@@ -7,7 +7,7 @@ A small local tool for editing the gallery on martinposta.com without hand-editi
 - **Mac:** double-click **start.command**.
 - **Windows:** double-click **start.bat**.
 
-Either opens http://localhost:4173 in your browser automatically. Close the
+Either opens http://localhost:4173/admin/ in your browser automatically. Close the
 terminal window (or press Ctrl+C in it) to stop the server when you're done.
 
 No `npm install` needed — the whole tool is plain Node.js, zero dependencies.

@@ -69,7 +69,7 @@ a photo in `images/thumbs/` or one of the inline SVG `<symbol>`s in
 
 ## Admin tool (`admin/`)
 
-`node admin/server.js` (or `start.command` / `start.bat`) → http://localhost:4173.
+`node admin/server.js` (or `start.command` / `start.bat`) → http://localhost:4173/admin/.
 Preview renders unsaved edits into a copy of the homepage without writing;
 Save writes `content/projects.json` and regenerates the grid block.
 `admin/lib/cards.js` is the parser/renderer shared by save, preview and
