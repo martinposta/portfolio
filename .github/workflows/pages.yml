@@ -1,14 +1,13 @@
-# Publishes site/ (and nothing else) to GitHub Pages.
-#
-# Manual trigger only until Pages is switched from the `redesign` branch to
-# "GitHub Actions". While Pages still builds from a branch, a deploy from
-# here would fail on every push. At the switch, add:
-#
-#   push:
-#     branches: [main]
+# Publishes site/ (and nothing else) to GitHub Pages on every push to main.
+# Pages source = "GitHub Actions" since 2026-09-27; before that it built the
+# redesign branch, which stays as the rollback: switching the source back to
+# "Deploy from a branch: redesign" restores the old site.
 name: Publish site
 
 on:
+  push:
+    branches: [main]
+    paths: ['site/**', '.github/workflows/pages.yml']
   workflow_dispatch:
 
 permissions:
