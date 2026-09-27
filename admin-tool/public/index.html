@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Portfolio Admin</title>
+<link rel="stylesheet" href="/admin.css">
+</head>
+<body>
+
+<header class="topbar">
+  <h1>Martin Pošta — Portfolio Admin</h1>
+  <div class="topbar-actions">
+    <span id="status" class="status"></span>
+    <button id="btn-reload" class="btn ghost">Reload from disk</button>
+    <button id="btn-preview" class="btn">Preview</button>
+    <button id="btn-save" class="btn primary">Save &amp; publish to index.html</button>
+  </div>
+</header>
+
+<main>
+  <div class="toolbar">
+    <button id="btn-add" class="btn">+ Add new card</button>
+    <span class="hint">Drag cards by the ⠿ handle to reorder. Order here = order on the site.</span>
+  </div>
+  <ul id="card-list" class="card-list"></ul>
+</main>
+
+<!-- Edit panel (slides in from the right) -->
+<div id="overlay" class="overlay hidden"></div>
+<aside id="edit-panel" class="edit-panel hidden">
+  <div class="edit-panel-head">
+    <h2 id="edit-title">Edit card</h2>
+    <button id="btn-close-edit" class="btn ghost">✕</button>
+  </div>
+  <form id="edit-form" class="edit-form">
+    <label>Title
+      <input type="text" name="title" required>
+    </label>
+    <label>Role / credit line
+      <input type="text" name="role">
+    </label>
+    <label>Category
+      <select name="category">
+        <option value="feature">feature</option>
+        <option value="vfx">vfx</option>
+        <option value="games">games</option>
+        <option value="shorts">shorts / others</option>
+      </select>
+    </label>
+    <label>Flag label (small tag on the card, e.g. "Feature", "VFX", "Game")
+      <input type="text" name="flag">
+    </label>
+
+    <fieldset>
+      <legend>Thumbnail</legend>
+      <label class="radio"><input type="radio" name="thumbType" value="photo"> Photo</label>
+      <label class="radio"><input type="radio" name="thumbType" value="icon"> Icon</label>
+      <div id="thumb-photo-fields" class="sub-fields">
+        <label>Image path
+          <input type="text" name="thumbSrc" placeholder="/images/thumbs/example_thumb.jpg">
+        </label>
+        <label>Upload a new thumbnail (writes into /images/thumbs/ and fills the path above)
+          <input type="file" id="thumb-upload" accept="image/*">
+        </label>
+        <img id="thumb-preview" class="thumb-preview" alt="">
+      </div>
+      <div id="thumb-icon-fields" class="sub-fields">
+        <label>Icon
+          <select name="thumbIcon"></select>
+        </label>
+      </div>
+    </fieldset>
+
+    <fieldset>
+      <legend>Click behaviour</legend>
+      <label class="radio"><input type="radio" name="interactionType" value="link"> External link (opens in a new tab)</label>
+      <label class="radio"><input type="radio" name="interactionType" value="page"> Dedicated project page</label>
+      <label class="radio"><input type="radio" name="interactionType" value="lightbox"> Lightbox (video + description)</label>
+
+      <div id="fields-link" class="sub-fields">
+        <label>URL
+          <input type="text" name="linkHref" placeholder="https://…">
+        </label>
+      </div>
+
+      <div id="fields-page" class="sub-fields">
+        <label>Project page path
+          <input type="text" name="pageHref" placeholder="/projects/example.html">
+        </label>
+      </div>
+
+      <div id="fields-lightbox" class="sub-fields">
+        <label>Lightbox title
+          <input type="text" name="lbTitle">
+        </label>
+        <label>Description
+          <textarea name="lbDesc" rows="3"></textarea>
+        </label>
+        <label>Video embed URL
+          <input type="text" name="lbVideo" placeholder="https://player.vimeo.com/video/…">
+        </label>
+        <label>Link URL (optional — e.g. Steam or IMDb)
+          <input type="text" name="lbLink" placeholder="https://…">
+        </label>
+        <label>Link label
+          <input type="text" name="lbLinkLabel" placeholder="Buy on Steam / IMDb">
+        </label>
+        <label>Background variant
+          <select name="lbPin">
+            <option value="">default</option>
+            <option value="2">pin-2</option>
+            <option value="3">pin-3</option>
+            <option value="4">pin-4</option>
+          </select>
+        </label>
+      </div>
+    </fieldset>
+
+    <div class="edit-actions">
+      <button type="button" id="btn-delete" class="btn danger">Delete card</button>
+      <div class="spacer"></div>
+      <button type="button" id="btn-cancel-edit" class="btn ghost">Cancel</button>
+      <button type="submit" class="btn primary">Apply changes</button>
+    </div>
+  </form>
+</aside>
+
+<script src="/admin.js"></script>
+</body>
+</html>

@@ -1,0 +1,520 @@
+[
+  {
+    "id": "little-flames-rising",
+    "title": "Little Flames Rising",
+    "role": "Indie game in production · Game director",
+    "category": "games",
+    "flag": "Game",
+    "thumb": {
+      "type": "icon",
+      "class": "games",
+      "icon": "ic-flame"
+    },
+    "interaction": {
+      "type": "link",
+      "href": "https://www.willownook.studio"
+    }
+  },
+  {
+    "id": "ploye-2",
+    "title": "Ploye 2",
+    "role": "In production · Character animator",
+    "category": "feature",
+    "flag": "Feature",
+    "thumb": {
+      "type": "photo",
+      "src": "/images/thumbs/ploye2_thumb.jpg",
+      "alt": "Ploye 2"
+    },
+    "interaction": {
+      "type": "link",
+      "href": "https://www.imdb.com/title/tt31251260/"
+    }
+  },
+  {
+    "id": "control",
+    "title": "Control",
+    "role": "In production · 3D Animator",
+    "category": "vfx",
+    "flag": "VFX",
+    "thumb": {
+      "type": "icon",
+      "class": "vfx",
+      "icon": "ic-wave"
+    },
+    "interaction": {
+      "type": "link",
+      "href": "https://www.imdb.com/title/tt27613707/"
+    }
+  },
+  {
+    "id": "pressure",
+    "title": "Pressure",
+    "role": "3D Animator",
+    "category": "vfx",
+    "flag": "VFX",
+    "thumb": {
+      "type": "photo",
+      "src": "/images/thumbs/pressure_thumb.jpg",
+      "alt": "Pressure"
+    },
+    "interaction": {
+      "type": "link",
+      "href": "https://www.imdb.com/title/tt32547691"
+    }
+  },
+  {
+    "id": "the-last-whalesinger",
+    "title": "The Last Whalesinger",
+    "role": "Lead Animator",
+    "category": "feature",
+    "flag": "Feature",
+    "thumb": {
+      "type": "photo",
+      "src": "/images/thumbs/tlws_thumb.jpg",
+      "alt": "The Last Whale Singer"
+    },
+    "interaction": {
+      "type": "lightbox",
+      "title": "The Last Whalesinger",
+      "desc": "Team lead and Character animator",
+      "video": "https://player.vimeo.com/video/1210909687",
+      "link": "https://www.imdb.com/title/tt13518550/",
+      "linkLabel": "IMDb",
+      "pin": ""
+    }
+  },
+  {
+    "id": "pysna-princezna",
+    "title": "Pyšná Princezna",
+    "role": "Lead Animator",
+    "category": "feature",
+    "flag": "Feature",
+    "thumb": {
+      "type": "photo",
+      "src": "/images/thumbs/pysna_thumb.jpg",
+      "alt": "Pyšná Princezna"
+    },
+    "interaction": {
+      "type": "lightbox",
+      "title": "Pyšná Princezna",
+      "desc": "Team lead and Character animator",
+      "video": "https://player.vimeo.com/video/1040551892",
+      "link": "https://www.imdb.com/title/tt10996076/",
+      "linkLabel": "IMDb",
+      "pin": "2"
+    }
+  },
+  {
+    "id": "the-black-demon",
+    "title": "The Black Demon",
+    "role": "Creature Animator",
+    "category": "vfx",
+    "flag": "VFX",
+    "thumb": {
+      "type": "photo",
+      "src": "/images/thumbs/tbd_thumb.jpg",
+      "alt": "The Black Demon"
+    },
+    "interaction": {
+      "type": "lightbox",
+      "title": "The Black Demon",
+      "desc": "Creature and props animator, layout artist",
+      "video": "https://player.vimeo.com/video/1045392736",
+      "link": "https://www.imdb.com/title/tt10279472/",
+      "linkLabel": "IMDb",
+      "pin": "3"
+    }
+  },
+  {
+    "id": "lego",
+    "title": "LEGO",
+    "role": "Personal animation tests — open project page →",
+    "category": "shorts",
+    "flag": "personal",
+    "thumb": {
+      "type": "photo",
+      "src": "/images/thumbs/lego_thumb.jpg",
+      "alt": "lego"
+    },
+    "interaction": {
+      "type": "page",
+      "href": "/projects/lego.html"
+    }
+  },
+  {
+    "id": "action-animation-workshop",
+    "title": "Action animation workshop",
+    "role": "with Stephen Eusebio",
+    "category": "shorts",
+    "flag": "personal",
+    "thumb": {
+      "type": "photo",
+      "src": "/images/thumbs/action_thumb.jpg",
+      "alt": "action"
+    },
+    "interaction": {
+      "type": "lightbox",
+      "title": "Action",
+      "desc": "animation workshop",
+      "video": "https://player.vimeo.com/video/1040591743",
+      "link": "",
+      "linkLabel": "",
+      "pin": "3"
+    }
+  },
+  {
+    "id": "a-garden-witch-s-life",
+    "title": "A Garden Witch's Life",
+    "role": "Gameplay & cinematic animator",
+    "category": "games",
+    "flag": "Game",
+    "thumb": {
+      "type": "photo",
+      "src": "/images/thumbs/agwl_thumb.jpg",
+      "alt": "A Garden Witch's Life"
+    },
+    "interaction": {
+      "type": "lightbox",
+      "title": "Garden Witch Life",
+      "desc": "Gameplay and cinematic animator, character rigger, setdressing. Released for Steam, XBOX, Playstation 5 and Nintendo Switch",
+      "video": "https://www.youtube.com/embed/SNdBVIpmoxY?si=SAorUUqqJCZ6k5d8",
+      "link": "https://store.steampowered.com/app/1240450/A_Garden_Witchs_Life/",
+      "linkLabel": "Buy on Steam",
+      "pin": ""
+    }
+  },
+  {
+    "id": "the-last-train-home",
+    "title": "The Last Train Home",
+    "role": "Gameplay animator",
+    "category": "games",
+    "flag": "Game",
+    "thumb": {
+      "type": "photo",
+      "src": "/images/thumbs/tlth_thumb.jpg",
+      "alt": "The Last Train Home"
+    },
+    "interaction": {
+      "type": "lightbox",
+      "title": "The Last Train Home",
+      "desc": "Had the opportunity to do MoCap recording and setting up animations of various soldier animations for the early vertical slice of the game. Didn't had the chance to work on the final build of the game but still I was glad to contribute.",
+      "video": "https://www.youtube.com/embed/q0lJ9A4AtFo?si=W1CNj3rYW_imEa8f",
+      "link": "https://store.steampowered.com/app/1469610/Last_Train_Home/",
+      "linkLabel": "Buy on Steam",
+      "pin": "4"
+    }
+  },
+  {
+    "id": "orc-animation",
+    "title": "Orc Animation",
+    "role": "personal animation test",
+    "category": "shorts",
+    "flag": "personal",
+    "thumb": {
+      "type": "photo",
+      "src": "/images/thumbs/orc_thumb.jpg",
+      "alt": "orc"
+    },
+    "interaction": {
+      "type": "lightbox",
+      "title": "Orc",
+      "desc": "personal animation test warcraft-style",
+      "video": "https://player.vimeo.com/video/337816552",
+      "link": "",
+      "linkLabel": "",
+      "pin": "2"
+    }
+  },
+  {
+    "id": "making-movies-with-friends",
+    "title": "Making movies with Friends",
+    "role": "Personal animation tests — open project page →",
+    "category": "shorts",
+    "flag": "personal",
+    "thumb": {
+      "type": "photo",
+      "src": "/images/thumbs/filming_thumb.jpg",
+      "alt": "filming"
+    },
+    "interaction": {
+      "type": "page",
+      "href": "/projects/filmingfriends.html"
+    }
+  },
+  {
+    "id": "tin-hearts",
+    "title": "Tin Hearts",
+    "role": "Cinematic animator",
+    "category": "games",
+    "flag": "Game",
+    "thumb": {
+      "type": "photo",
+      "src": "/images/thumbs/tinhearts_thumb.jpg",
+      "alt": "Tin Hearts"
+    },
+    "interaction": {
+      "type": "lightbox",
+      "title": "Tin Hearts",
+      "desc": "Had the opportunity to help with a few keyframes cutscene animations. A small contribution, but still a fun one.",
+      "video": "https://www.youtube.com/embed/XgqxMM7IFMA?si=jnQzRRjJU3Ehz499",
+      "link": "https://store.steampowered.com/app/1831700/Tin_Hearts/",
+      "linkLabel": "Buy on Steam",
+      "pin": ""
+    }
+  },
+  {
+    "id": "muppet-babies-s3",
+    "title": "Muppet Babies — S3",
+    "role": "Lead animator",
+    "category": "shorts",
+    "flag": "TV Series",
+    "thumb": {
+      "type": "photo",
+      "src": "/images/thumbs/muppets_thumb.jpg",
+      "alt": "Muppet Babies"
+    },
+    "interaction": {
+      "type": "lightbox",
+      "title": "Muppet Babies — Season 3",
+      "desc": "Character animator and team lead for 5 episodes",
+      "video": "https://player.vimeo.com/video/1040573198",
+      "link": "https://www.imdb.com/title/tt6337766/",
+      "linkLabel": "IMDb",
+      "pin": "3"
+    }
+  },
+  {
+    "id": "watersprite",
+    "title": "Watersprite",
+    "role": "Creature animator",
+    "category": "shorts",
+    "flag": "Short Film",
+    "thumb": {
+      "type": "photo",
+      "src": "/images/thumbs/perla_thumb.jpg",
+      "alt": "Watersprite"
+    },
+    "interaction": {
+      "type": "lightbox",
+      "title": "Watersprite",
+      "desc": "Creature animator",
+      "video": "https://player.vimeo.com/video/644599858",
+      "link": "",
+      "linkLabel": "",
+      "pin": "2"
+    }
+  },
+  {
+    "id": "dinosauri",
+    "title": "Dinosauři",
+    "role": "Creature rigging",
+    "category": "games",
+    "flag": "VR Experience",
+    "thumb": {
+      "type": "photo",
+      "src": "/images/thumbs/dinosauri_thumb.jpg",
+      "alt": "Dinosauři"
+    },
+    "interaction": {
+      "type": "link",
+      "href": "https://www.divrlabs.com/experiences/meet-the-dinosaurs"
+    }
+  },
+  {
+    "id": "jama",
+    "title": "Jáma",
+    "role": "Character animator",
+    "category": "shorts",
+    "flag": "Short Film",
+    "thumb": {
+      "type": "photo",
+      "src": "/images/thumbs/jama_thumb.jpg",
+      "alt": "Jáma"
+    },
+    "interaction": {
+      "type": "link",
+      "href": "https://www.maurfilm.com/portfolio-items/jama/"
+    }
+  },
+  {
+    "id": "vr-animation-workshop",
+    "title": "VR Animation workshop",
+    "role": "— open project page →",
+    "category": "shorts",
+    "flag": "Short",
+    "thumb": {
+      "type": "photo",
+      "src": "/images/thumbs/vr_thumb.jpg",
+      "alt": "vr"
+    },
+    "interaction": {
+      "type": "page",
+      "href": "/projects/vr.html"
+    }
+  },
+  {
+    "id": "time-transit-vr",
+    "title": "Time Transit VR",
+    "role": "Gameplay & cinematic animator, rigger — open project page →",
+    "category": "games",
+    "flag": "PC VR",
+    "thumb": {
+      "type": "photo",
+      "src": "/images/thumbs/ttvr_thumb.jpg",
+      "alt": "Time Transit VR"
+    },
+    "interaction": {
+      "type": "page",
+      "href": "/projects/ttvr.html"
+    }
+  },
+  {
+    "id": "spy-cat",
+    "title": "Spy Cat",
+    "role": "Character Animator",
+    "category": "feature",
+    "flag": "Feature",
+    "thumb": {
+      "type": "photo",
+      "src": "/images/thumbs/spycat_thumb.jpg",
+      "alt": "Spy Cat"
+    },
+    "interaction": {
+      "type": "link",
+      "href": "https://www.imdb.com/title/tt5746054/"
+    }
+  },
+  {
+    "id": "neil",
+    "title": "NEIL",
+    "role": "Short film — open project page →",
+    "category": "shorts",
+    "flag": "Short Film",
+    "thumb": {
+      "type": "photo",
+      "src": "/images/thumbs/neil_thumb.jpg",
+      "alt": "Neil"
+    },
+    "interaction": {
+      "type": "page",
+      "href": "/projects/neil.html"
+    }
+  },
+  {
+    "id": "plody-mraku",
+    "title": "Plody mraků",
+    "role": "Character animator/rigger — open project page →",
+    "category": "shorts",
+    "flag": "Short Film",
+    "thumb": {
+      "type": "photo",
+      "src": "/images/thumbs/plodymraku_thumb.jpg",
+      "alt": "Plody mraků"
+    },
+    "interaction": {
+      "type": "page",
+      "href": "/projects/plodymraku.html"
+    }
+  },
+  {
+    "id": "first",
+    "title": "First",
+    "role": "Short film",
+    "category": "shorts",
+    "flag": "Short Film",
+    "thumb": {
+      "type": "photo",
+      "src": "/images/thumbs/first_thumb.jpg",
+      "alt": "First"
+    },
+    "interaction": {
+      "type": "lightbox",
+      "title": "First",
+      "desc": "FAMU, 3rd semester, stop motion puppets, technical supervisor - Michael Carrington",
+      "video": "https://player.vimeo.com/video/187638920",
+      "link": "",
+      "linkLabel": "Link",
+      "pin": ""
+    }
+  },
+  {
+    "id": "bearavity",
+    "title": "Bearavity",
+    "role": "Short film",
+    "category": "shorts",
+    "flag": "Short Film",
+    "thumb": {
+      "type": "photo",
+      "src": "/images/thumbs/bearavity_thumb.jpg",
+      "alt": "Bearavity"
+    },
+    "interaction": {
+      "type": "lightbox",
+      "title": "Bearavity",
+      "desc": "FAMU, 3rd semester, paper cutouts on glass, technical supervisor - Michael Carrington",
+      "video": "https://player.vimeo.com/video/232418134",
+      "link": "",
+      "linkLabel": "Link",
+      "pin": "4"
+    }
+  },
+  {
+    "id": "gravity",
+    "title": "Gravity",
+    "role": "Short film",
+    "category": "shorts",
+    "flag": "Short Film",
+    "thumb": {
+      "type": "photo",
+      "src": "/images/thumbs/gravitace_thumb.jpg",
+      "alt": "Gravity"
+    },
+    "interaction": {
+      "type": "lightbox",
+      "title": "Gravity",
+      "desc": "FAMU, 2nd semester, hand drawn animation, sound - Adam Bláha",
+      "video": "https://player.vimeo.com/video/141916834",
+      "link": "",
+      "linkLabel": "Link",
+      "pin": ""
+    }
+  },
+  {
+    "id": "evoluce",
+    "title": "Evoluce",
+    "role": "Short film",
+    "category": "shorts",
+    "flag": "Short Film",
+    "thumb": {
+      "type": "photo",
+      "src": "/images/thumbs/evoluce_thumb.jpg",
+      "alt": "Evoluce"
+    },
+    "interaction": {
+      "type": "lightbox",
+      "title": "Evoluce",
+      "desc": "FAMU, 1st semester, hand drawn animation, sound - Martin Stýblo",
+      "video": "https://player.vimeo.com/video/103438970",
+      "link": "",
+      "linkLabel": "Link",
+      "pin": "3"
+    }
+  },
+  {
+    "id": "figure-spacing",
+    "title": "Figure Spacing",
+    "role": "Short film — open project page →",
+    "category": "shorts",
+    "flag": "Short Film",
+    "thumb": {
+      "type": "photo",
+      "src": "/images/thumbs/figurespacing_thumb.jpg",
+      "alt": "Figure Spacing"
+    },
+    "interaction": {
+      "type": "page",
+      "href": "/projects/figurespacing.html"
+    }
+  }
+]
