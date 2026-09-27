@@ -69,12 +69,11 @@ identical after the fix.
 
 1. ✅ Viewport meta, escaping, repo under git, folder split into site/content/admin.
 2. GitHub Actions workflow publishing `site/`; switch Pages from `redesign`.
-3. Admin ↔ git: fetch + fast-forward pull on start, re-fetch before every
+3. ✅ Admin ↔ git (2026-09-27, admin/lib/git.js): fetch + fast-forward pull on start, re-fetch before every
    save (refuse if `main` moved), commit + push on save, warn about files not
    in git. Drafts: `visible:false` cards are committed but never rendered into
    the HTML (hiding them with CSS would leave them in the page source). The
    repo is public, so drafts are visible on GitHub — accepted.
-   `.gitattributes` with LF line endings before the Windows copy exists.
 4. Admin: resize images in the browser (canvas → WebP) before upload, refuse
    silent overwrites, validate category / video links / page paths.
 5. Project pages as block lists in `content/pages/*.json`, generated into
@@ -94,3 +93,22 @@ identical after the fix.
 `.claude/launch.json` has `site` (python static server on :8000, serving
 `site/` as the web root, so root-relative links work) and `admin` (:4173).
 `include.js` needs http(s), not `file://`.
+
+## Admin ↔ git (how it behaves)
+
+- `POST /api/sync` on open: fetch, `merge --ff-only` when only behind. Diverged,
+  wrong branch or a failed pull are shown as a red bar, never auto-resolved.
+- `PUT /api/projects {cards, message, head}`: fetch again; refuse (409, nothing
+  written) when origin/main moved **or** this copy's HEAD differs from `head`
+  (the commit the page loaded at — catches a second tab). Then write, commit
+  `site/` + `content/`, push. A failed push keeps the commit; the page offers
+  "Push now". Verified against a throwaway bare remote: two copies, stale
+  head, offline publish + retry.
+- The server listens on 127.0.0.1 (`HOST` overrides) because there is no login.
+- HTTPS for martinposta.com is Cloudflare's job, not GitHub's: DNS is proxied
+  through Cloudflare, so GitHub never gets a certificate and its
+  "Enforce HTTPS" switch cannot be turned on. The http→https redirect is
+  Cloudflare's "Always Use HTTPS" (owner's dashboard).
+- Claude Code sessions opened from another project keep that project's
+  `.claude/launch.json` for the preview tool — open a session in this folder
+  to use the `site`/`admin` configs.
