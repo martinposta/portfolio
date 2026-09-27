@@ -62,13 +62,16 @@ nav a:hover{color:var(--feature)}
 @media (max-width:640px){
   .menu-toggle{display:block}
   body.is-home .header-inner{justify-content:space-between}
+  /* closed = slid out with transform + visibility: parked at right:-100%
+     it still widened the page, and its links stayed reachable by Tab */
   nav{
-    position:fixed;top:0;right:-100%;bottom:0;width:72%;max-width:280px;
+    position:fixed;top:0;right:0;bottom:0;width:72%;max-width:280px;
     background:var(--card);flex-direction:column;align-items:flex-start;
-    padding:80px 28px 28px;gap:22px;transition:right .25s ease;
+    padding:80px 28px 28px;gap:22px;
+    transform:translateX(110%);visibility:hidden;transition:transform .25s ease,visibility 0s .25s;
     box-shadow:-3px 0 10px rgba(0,0,0,.15);z-index:30;font-size:16px;
   }
-  nav.open{right:0}
+  nav.open{transform:none;visibility:visible;transition:transform .25s ease}
   .nav-sep{display:none}
 }
 
@@ -296,3 +299,29 @@ footer::before{
 .lightbox-frame.pin-2 .paper-scrap{background:#dbe3e6;transform:rotate(2.6deg)}
 .lightbox-frame.pin-3 .paper-scrap{background:#f2dbd9;transform:rotate(-1.8deg)}
 .lightbox-frame.pin-4 .paper-scrap{background:#dfe8db;transform:rotate(3.2deg)}
+
+/* ---- phones ---------------------------------------------------------
+   Only reachable since every page got <meta name="viewport"> (2026-09-27);
+   before that phones rendered the 980px desktop layout. */
+/* Decorations parked past the edge (the coffee ring, the crumbs) must not
+   widen the page. Clipped where they live: overflow on <html> or <body>
+   came too late — a phone sizes its layout viewport to the content on load
+   (measured innerWidth 499 on a 375 screen). clip, not hidden, so nothing
+   becomes a scroll container and the sticky header keeps working. Only
+   below 1240px: wider than that the ring hangs into empty margin as designed
+   and clipping would cut it off at the column edge. */
+@media (max-width:1240px){ .wrap,footer{overflow-x:clip} }
+body{overflow-wrap:break-word}
+@media (max-width:760px){
+  .grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:24px 14px}
+}
+@media (max-width:640px){
+  body{padding-left:38px}
+  .spine{width:22px;background-size:22px 32px;background-position:11px 16px}
+  .margin-rule{left:30px}
+  .wrap,.header-inner{padding:0 16px}
+  .slate{grid-template-columns:1fr}
+}
+@media (prefers-reduced-motion:reduce){
+  nav,nav.open{transition:none}
+}

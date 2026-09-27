@@ -81,6 +81,9 @@
     if (s.problem === 'branch' || s.branch !== 'main'){
       state = 'bad'; label = 'on branch ' + s.branch;
       banner('bad', '<b>This copy is on branch “' + esc(s.branch) + '”, not main.</b> Publishing is off until it is back on main.');
+    } else if (!s.emailOk){
+      state = 'bad'; label = 'main · ' + s.head + ' · commit email';
+      banner('bad', '<b>This copy would commit as “' + esc(s.email || 'no email') + '”.</b> GitHub refuses pushes that expose a private address, so publishing is blocked. In the repo folder run <code>git config user.email 33331553+martinposta@users.noreply.github.com</code> and reload.');
     } else if (s.problem === 'diverged' || (s.ahead && s.behind)){
       state = 'bad'; label = 'main · ' + s.head + ' · diverged';
       banner('bad', '<b>This copy and GitHub both have commits the other lacks.</b> That needs sorting out in git by hand; publishing would be refused.');

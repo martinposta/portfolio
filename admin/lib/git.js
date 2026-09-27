@@ -18,6 +18,10 @@ const BRANCH = 'main';
 const REMOTE = 'origin';
 const PATHS = ['site', 'content'];           // what a publish may commit
 
+// The GitHub account keeps its email private and blocks any push whose
+// commits carry the real address (GH007). Commits must use the noreply one.
+const NOREPLY = /@users\.noreply\.github\.com$/;
+
 class GitError extends Error {
   constructor(message, code, details) {
     super(message);
@@ -29,11 +33,14 @@ class GitError extends Error {
 function makeGit(repoDir) {
   function run(args, opts) {
     try {
-      return execFileSync('git', args, {
+      const out = execFileSync('git', args, {
         cwd: repoDir, encoding: 'utf8', timeout: (opts && opts.timeout) || 30000,
         stdio: ['ignore', 'pipe', 'pipe'],
         env: Object.assign({}, process.env, { GIT_TERMINAL_PROMPT: '0' })
-      }).trim();
+      });
+      // porcelain status lines start with a space (" M file"); trimming the
+      // whole output ate it and shifted the first path by one character
+      return opts && opts.raw ? out.replace(/\n+$/, '') : out.trim();
     } catch (e) {
       if (opts && opts.allowFail) return null;
       const msg = ((e.stderr || '') + '').trim() || e.message;
@@ -55,14 +62,16 @@ function makeGit(repoDir) {
     const upstream = REMOTE + '/' + BRANCH;
     const counts = run(['rev-list', '--left-right', '--count', 'HEAD...' + upstream], { allowFail: true });
     const [ahead, behind] = counts ? counts.split(/\s+/).map(Number) : [0, 0];
-    const dirty = run(['status', '--porcelain', '--untracked-files=all', '--', ...PATHS])
+    const dirty = run(['status', '--porcelain', '--untracked-files=all', '--', ...PATHS], { raw: true })
       .split('\n').filter(Boolean).map((l) => l.slice(3));
     const incoming = behind
       ? run(['log', '--format=%h %s', 'HEAD..' + upstream]).split('\n').filter(Boolean)
       : [];
     const remoteHead = run(['rev-parse', '--short', upstream], { allowFail: true });
     const remoteWhen = run(['log', '-1', '--format=%cr', upstream], { allowFail: true });
-    return { branch, head, ahead, behind, dirty, incoming, remoteHead, remoteWhen, offline: !!fetchError, fetchError };
+    const email = run(['config', 'user.email'], { allowFail: true }) || '';
+    return { branch, head, ahead, behind, dirty, incoming, remoteHead, remoteWhen, offline: !!fetchError, fetchError,
+      email, emailOk: NOREPLY.test(email) };
   }
 
   // Called when the admin opens. Fast-forwards when this copy is only behind;
@@ -89,6 +98,9 @@ function makeGit(repoDir) {
     if (expectHead && expectHead !== s.head) {
       throw new GitError('This copy changed since the page was loaded (a publish from another tab?). Reload before publishing.', 'moved', s);
     }
+    if (!s.emailOk) {
+      throw new GitError(`Commits from this copy would carry "${s.email || 'no email'}", and GitHub refuses pushes that expose a private address. Run in the repo folder: git config user.email <id>+<login>@users.noreply.github.com (see CLAUDE.md).`, 'email', s);
+    }
     if (s.behind) {
       throw new GitError(`${BRANCH} on GitHub moved while you were editing (${s.remoteHead}, ${s.remoteWhen}). Nothing was written.`, 'moved', s);
     }
@@ -108,7 +120,10 @@ function makeGit(repoDir) {
   // the commit locally; the next publish (or "retry") pushes it along.
   function push() {
     try { run(['push', '--quiet', REMOTE, BRANCH], { timeout: 60000 }); return null; }
-    catch (e) { return e.message; }
+    catch (e) {
+      if (/GH007|private email/i.test(e.message)) return 'GitHub refused the push because a commit carries a private email address (GH007). Set the noreply address with git config user.email (see CLAUDE.md), then amend the waiting commit.';
+      return e.message;
+    }
   }
 
   return { state, sync, publish, push, GitError, BRANCH };
