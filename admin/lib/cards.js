@@ -132,9 +132,15 @@ function renderThumb(thumb) {
   return `<div class="thumb ${thumb.class}"><svg><use href="#${thumb.icon}"/></svg></div>`;
 }
 
-function renderCard(card) {
+function renderCard(card, opts) {
   const lines = [];
-  lines.push(`      <!-- ${card.title} -->`);
+  // Preview only: a draft is shown greyed and dashed so it can be checked in
+  // place. The published page never contains drafts at all.
+  const cls = opts && opts.draft
+    ? 'card" style="opacity:.45;outline:2px dashed #b23a2e;outline-offset:4px'
+    : 'card';
+  // "--" would end the comment early
+  lines.push(`      <!-- ${String(card.title).replace(/--/g, '- -')} -->`);
   let openTag;
   if (card.interaction.type === 'lightbox') {
     const it = card.interaction;
@@ -146,11 +152,11 @@ function renderCard(card) {
     if (it.link || it.linkLabel) {
       parts.push(`data-link="${encodeEntities(it.link)}" data-link-label="${encodeEntities(it.linkLabel)}"`);
     }
-    openTag = `<a class="card" ${parts.join(' ')}>`;
+    openTag = `<a class="${cls}" ${parts.join(' ')}>`;
   } else if (card.interaction.type === 'page') {
-    openTag = `<a class="card" data-cat="${card.category}" href="${encodeEntities(card.interaction.href)}">`;
+    openTag = `<a class="${cls}" data-cat="${card.category}" href="${encodeEntities(card.interaction.href)}">`;
   } else {
-    openTag = `<a class="card" data-cat="${card.category}" href="${encodeEntities(card.interaction.href)}" target="_blank" rel="noopener">`;
+    openTag = `<a class="${cls}" data-cat="${card.category}" href="${encodeEntities(card.interaction.href)}" target="_blank" rel="noopener">`;
   }
   lines.push(`      ${openTag}`);
   lines.push(`        <div class="tape"></div><div class="cat-flag">${encodeEntities(card.flag)}</div>`);
@@ -161,8 +167,15 @@ function renderCard(card) {
   return lines.join('\n');
 }
 
-function renderGrid(cards) {
-  return '<div class="grid">\n\n' + cards.map(renderCard).join('\n\n') + '\n\n    </div>';
+// A card with visible === false is a draft: it stays in projects.json (and
+// so in git) but is left out of the HTML entirely — hiding it with CSS would
+// still ship it in the page source. {preview:true} renders drafts greyed.
+function renderGrid(cards, opts) {
+  const preview = !!(opts && opts.preview);
+  const shown = cards.filter((c) => preview || c.visible !== false);
+  return '<div class="grid">\n\n' +
+    shown.map((c) => renderCard(c, { draft: c.visible === false })).join('\n\n') +
+    '\n\n    </div>';
 }
 
 module.exports = { findGridBlock, parseCards, renderCard, renderGrid, slugify };

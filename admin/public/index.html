@@ -12,16 +12,23 @@
   <h1>Martin Pošta — Portfolio Admin</h1>
   <div class="topbar-actions">
     <span id="status" class="status"></span>
-    <button id="btn-reload" class="btn ghost">Reload from disk</button>
+    <span id="repo" class="repo" title="State of this copy against GitHub"><span class="dot"></span><span id="repo-text">checking…</span></span>
     <button id="btn-preview" class="btn">Preview</button>
-    <button id="btn-save" class="btn primary">Save &amp; publish to index.html</button>
+    <button id="btn-save" class="btn primary">Save &amp; publish<span id="count" class="count" hidden></span></button>
   </div>
 </header>
+
+<div id="banner" class="banner" hidden></div>
 
 <main>
   <div class="toolbar">
     <button id="btn-add" class="btn">+ Add new card</button>
-    <span class="hint">Drag cards by the ⠿ handle to reorder. Order here = order on the site.</span>
+    <div class="seg" role="group" aria-label="Show">
+      <button data-show="all" aria-pressed="true">All <span id="n-all"></span></button>
+      <button data-show="live" aria-pressed="false">Live <span id="n-live"></span></button>
+      <button data-show="draft" aria-pressed="false">Drafts <span id="n-draft"></span></button>
+    </div>
+    <span class="hint">Drag ⠿ to reorder (in “All”). The eye puts a card live or makes it a draft.</span>
   </div>
   <ul id="card-list" class="card-list"></ul>
 </main>
@@ -125,6 +132,23 @@
     </div>
   </form>
 </aside>
+
+<!-- Publish dialog -->
+<div id="pub" class="modal-scrim" hidden>
+  <div class="modal" role="dialog" aria-modal="true" aria-labelledby="pub-title">
+    <h2 id="pub-title">Publish to martinposta.com</h2>
+    <ul id="pub-changes" class="changes"></ul>
+    <label class="modal-field">Commit message
+      <input type="text" id="pub-msg">
+    </label>
+    <p id="pub-result" class="pub-result" hidden></p>
+    <div class="edit-actions">
+      <div class="spacer"></div>
+      <button type="button" id="pub-cancel" class="btn ghost">Cancel</button>
+      <button type="button" id="pub-go" class="btn primary">Publish</button>
+    </div>
+  </div>
+</div>
 
 <script src="/admin.js"></script>
 </body>
