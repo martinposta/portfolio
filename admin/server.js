@@ -39,7 +39,8 @@ const PROJECTS_DIR = path.join(ROOT, 'projects');           // …generated into
 const UPLOADS = {
   thumbs: { dir: THUMBS_DIR, types: /\.(jpe?g|png|webp)$/i },
   projects: { dir: path.join(ROOT, 'images', 'projects'), types: /\.(jpe?g|png|webp)$/i },
-  doodles: { dir: path.join(ROOT, 'images', 'doodles'), types: /\.(svg|png|webp|gif|webm|mp4)$/i }
+  doodles: { dir: path.join(ROOT, 'images', 'doodles'), types: /\.(svg|png|webp|gif|webm|mp4)$/i },
+  loops: { dir: path.join(ROOT, 'images', 'loops'), types: /\.(webm|mp4)$/i }     // hover clips on gallery cards
 };
 const PUBLIC_DIR = path.join(__dirname, 'public');
 const PORT = Number(process.env.PORT) || 4173;
@@ -132,6 +133,7 @@ function validateCards(cards) {
     if (it.type === 'lightbox' && it.video && !VIDEO_EMBED.test(it.video)) return `${name}: the video must be a Vimeo or YouTube link (got ${it.video})`;
     if (it.type === 'lightbox' && it.link && !/^https?:\/\//.test(it.link)) return `${name}: the extra link must start with http:// or https://`;
     if (c.thumb && c.thumb.type === 'icon' && !icons.includes(c.thumb.icon)) return `${name}: unknown icon ${c.thumb.icon}`;
+    if (c.thumb && c.thumb.loop && !(/^\/images\/loops\/[\w.-]+\.(webm|mp4)$/.test(c.thumb.loop) && fs.existsSync(path.join(ROOT, c.thumb.loop)))) return `${name}: hover loop ${c.thumb.loop} is not an uploaded clip`;
   }
   return null;
 }

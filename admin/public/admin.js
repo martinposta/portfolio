@@ -163,6 +163,7 @@
     var thumbType = (card.thumb && card.thumb.type) || 'photo';
     form.querySelector('input[name=thumbType][value="' + thumbType + '"]').checked = true;
     form.elements.thumbSrc.value = (card.thumb && card.thumb.src) || '';
+    form.elements.thumbLoop.value = (card.thumb && card.thumb.loop) || '';
     document.getElementById('thumb-preview').src = (card.thumb && card.thumb.src) || '';
     if (card.thumb && card.thumb.type === 'icon') form.elements.thumbIcon.value = card.thumb.icon || icons[0];
     showRadioGroup('thumb', thumbType);
@@ -214,6 +215,13 @@
       document.getElementById('thumb-preview').src = path + '?t=' + Date.now();
     }).catch(function(){});
   });
+  document.getElementById('loop-upload').addEventListener('change', function(ev){
+    var file = ev.target.files[0];
+    ev.target.value = '';
+    if (!file) return;
+    if (file.size > 4 * 1024 * 1024 && !confirm('This clip is ' + Math.round(file.size / 1048576) + ' MB. Visitors download it on hover; a 2–3 s loop should be well under 3 MB. Upload anyway?')) return;
+    C.upload(file, 'loops', null).then(function(path){ form.elements.thumbLoop.value = path; }).catch(function(){});
+  });
   form.elements.lbVideo.addEventListener('change', function(){
     form.elements.lbVideo.value = C.embedUrl(form.elements.lbVideo.value);
   });
@@ -247,7 +255,7 @@
   function formToCard(){
     var thumbType = form.querySelector('input[name=thumbType]:checked').value;
     var thumb = thumbType === 'photo'
-      ? { type: 'photo', src: form.elements.thumbSrc.value.trim(), alt: form.elements.title.value.trim() }
+      ? { type: 'photo', src: form.elements.thumbSrc.value.trim(), alt: form.elements.title.value.trim(), loop: form.elements.thumbLoop.value.trim() || undefined }
       : { type: 'icon', class: form.elements.category.value, icon: form.elements.thumbIcon.value };
 
     var itype = form.querySelector('input[name=interactionType]:checked').value;

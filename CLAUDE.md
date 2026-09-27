@@ -95,7 +95,7 @@ identical after the fix.
    `site/projects/*.html` (block types: text, heading, video, photos, buttons,
    credit card, doodle). Concept: https://claude.ai/artifact/3kHaqxoY8cHXLV2eqHT4FR
    (gallery concept: https://claude.ai/artifact/UVrxmPhpBE4NFG1cwrtUBK).
-6. Animation: hover loops on cards, a flipbook/doodle system
+6. ✅ (branch animations, awaiting review) Animation: hover loops on cards, a flipbook/doodle system
    (`images/doodles/`, SVG/PNG/WebM, static or animated), cards reshuffling
    with overshoot on tab change, pencil-drawn heading underlines, lightbox
    landing like a pinned sheet. All respect `prefers-reduced-motion`.
@@ -169,3 +169,23 @@ identical after the fix.
   2026-09-28) would leave no way back. **Create review branches from a main
   that has the switcher.** The running server keeps its in-memory code; a
   branch that changes `admin/server.js` needs a restart to see those changes.
+
+## Motion (`site/assets/include.js`, end of file)
+
+- All of it is decoration on a page that is complete without it, and all of
+  it is skipped under `prefers-reduced-motion`.
+- Movement uses the individual `translate`/`scale`/`rotate` properties via
+  the Web Animations API, **never `transform`**: cards, papers and the
+  lightbox already carry their tilt in `transform`, and animating it would
+  flatten them (verified: a card keeps its -1.4° after the filter animation).
+- Category tabs are `<button>`s now (they were `<div>`s, unreachable by
+  keyboard). Filtering is FLIP: measure, toggle display, measure, animate the
+  difference with an overshoot; newly shown cards pop in staggered.
+- Section headings get an SVG pencil line (`pathLength="1"`, dashoffset 1→0)
+  when 80 % visible. IntersectionObserver does not fire while the Browser
+  pane is hidden — take a screenshot before measuring.
+- Lightbox cards have no href, so the renderer gives them `role="button"
+  tabindex="0"`; Enter/Space open them, focus goes to × and back to the card.
+- Hover loops: `thumb.loop` (`/images/loops/*.webm|mp4`) renders as
+  `data-loop` on the thumb; the `<video>` is created on first hover only and
+  never on touch screens. Uploaded untouched from the card editor.

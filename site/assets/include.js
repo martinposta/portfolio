@@ -58,6 +58,8 @@ function wireMenuToggle() {
 
 // ---- Lightbox: video + description + links, driven entirely by data-*
 // attributes on the triggering card. No video? It just hides that part.
+let lastTrigger = null;   // the card that opened the lightbox gets focus back on close
+
 function openLightbox(card) {
   const overlay = document.getElementById('lightbox-overlay');
   if (!overlay) return;
@@ -102,6 +104,9 @@ function openLightbox(card) {
 
   overlay.classList.add('open');
   overlay.setAttribute('aria-hidden', 'false');
+  lastTrigger = card;
+  overlay.querySelector('.lightbox-close').focus({ preventScroll: true });
+  landLightbox(overlay);
 }
 
 function closeLightbox() {
@@ -110,6 +115,7 @@ function closeLightbox() {
   overlay.classList.remove('open');
   overlay.setAttribute('aria-hidden', 'true');
   document.getElementById('lightbox-video-wrap').innerHTML = ''; // stop playback
+  if (lastTrigger) { lastTrigger.focus({ preventScroll: true }); lastTrigger = null; }
 }
 
 document.addEventListener('click', (e) => {
@@ -125,9 +131,105 @@ document.addEventListener('click', (e) => {
 });
 document.addEventListener('keydown', (e) => {
   if (e.key === 'Escape') closeLightbox();
+  // lightbox cards are role=button: Enter and Space open them like a click
+  const card = (e.key === 'Enter' || e.key === ' ') && e.target.closest && e.target.closest('[data-lightbox]');
+  if (card) { e.preventDefault(); openLightbox(card); }
 });
 
 document.addEventListener('DOMContentLoaded', () => {
   document.querySelectorAll('[data-include]').forEach(includeHTML);
   wireMenuToggle(); // in case a page has a static (non-included) header
+  initGalleryFilter();
+  initPencilUnderlines();
+  initHoverLoops();
 });
+
+// ---- Motion --------------------------------------------------------------
+// Everything below is decoration on top of a page that is complete without
+// it, and all of it steps aside for prefers-reduced-motion. Movement uses the
+// individual translate/scale/rotate properties, never transform, because the
+// cards and papers already carry their tilt in transform and must keep it.
+const reducedMotion = () => window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+// Category tabs. Cards that stay visible glide from where they were to where
+// they land, with a small overshoot; cards that appear pop in, staggered.
+// (FLIP: measure, change the layout, measure again, animate the difference.)
+function initGalleryFilter() {
+  const tabs = [...document.querySelectorAll('.tabs .tab')];
+  const cards = [...document.querySelectorAll('.grid .card')];
+  tabs.forEach((tab) => tab.addEventListener('click', () => {
+    tabs.forEach((t) => { t.classList.toggle('active', t === tab); t.setAttribute('aria-pressed', String(t === tab)); });
+    const f = tab.dataset.filter;
+    const before = new Map(cards.filter((c) => c.offsetParent).map((c) => [c, c.getBoundingClientRect()]));
+    cards.forEach((c) => { c.getAnimations().forEach((a) => a.cancel()); c.style.display = (f === 'all' || c.dataset.cat === f) ? '' : 'none'; });
+    if (reducedMotion()) return;
+    let n = 0;
+    cards.forEach((c) => {
+      if (!c.offsetParent) return;
+      const was = before.get(c), now = c.getBoundingClientRect();
+      if (was) {
+        const dx = was.left - now.left, dy = was.top - now.top;
+        if (dx || dy) c.animate([{ translate: dx + 'px ' + dy + 'px' }, { translate: '0 0' }],
+          { duration: 520, easing: 'cubic-bezier(.34,1.4,.64,1)' });
+      } else {
+        c.animate([{ opacity: 0, scale: '.86', translate: '0 16px' }, { opacity: 1, scale: '1', translate: '0 0' }],
+          { duration: 420, delay: Math.min(n++, 8) * 45, easing: 'cubic-bezier(.34,1.5,.64,1)', fill: 'backwards' });
+      }
+    });
+  }));
+}
+
+// A pencil stroke under each section heading, drawn when it scrolls into view.
+function initPencilUnderlines() {
+  const heads = [...document.querySelectorAll('.section-head h2')];
+  heads.forEach((h, i) => {
+    // three hand-drawn variants so neighbouring headings do not match
+    const d = ['M2 6 C 40 2, 80 9, 120 5 S 180 3, 198 6', 'M2 5 C 50 8, 90 1, 140 6 S 185 7, 198 4', 'M3 7 C 30 3, 100 8, 150 4 S 190 5, 197 7'][i % 3];
+    h.insertAdjacentHTML('beforeend', '<svg class="pencil-line" viewBox="0 0 200 10" preserveAspectRatio="none" aria-hidden="true"><path pathLength="1" d="' + d + '"/></svg>');
+  });
+  if (reducedMotion() || !('IntersectionObserver' in window)) { heads.forEach((h) => h.classList.add('drawn')); return; }
+  const io = new IntersectionObserver((entries) => entries.forEach((e) => {
+    if (e.isIntersecting) { e.target.classList.add('drawn'); io.unobserve(e.target); }
+  }), { threshold: 0.8 });
+  heads.forEach((h) => io.observe(h));
+}
+
+// The lightbox drops in like a sheet being pinned: from above and tilted,
+// past its spot, and settles.
+function landLightbox(overlay) {
+  if (reducedMotion()) return;
+  overlay.animate([{ opacity: 0 }, { opacity: 1 }], { duration: 180, easing: 'ease-out' });
+  overlay.querySelector('.lightbox-frame').animate([
+    { opacity: 0, translate: '0 -70px', rotate: '-6deg', scale: '1.04' },
+    { opacity: 1, translate: '0 8px', rotate: '1.4deg', scale: '1', offset: 0.65 },
+    { translate: '0 -2px', rotate: '-.4deg', offset: 0.85 },
+    { translate: '0 0', rotate: '0deg' }
+  ], { duration: 560, easing: 'cubic-bezier(.2,.7,.3,1)' });
+}
+
+// Hover loops: a card whose thumb has data-loop plays that short clip in
+// place of the still while the pointer (or keyboard focus) is on it. The
+// video is only created on the first hover, so the page loads no video, and
+// nothing happens on touch screens, where there is no hover to end it.
+function initHoverLoops() {
+  if (reducedMotion() || !window.matchMedia('(hover: hover) and (pointer: fine)').matches) return;
+  document.querySelectorAll('.card .thumb[data-loop]').forEach((thumb) => {
+    const card = thumb.closest('.card');
+    let video = null;
+    const start = () => {
+      if (!video) {
+        video = document.createElement('video');
+        Object.assign(video, { src: thumb.dataset.loop, muted: true, loop: true, playsInline: true, preload: 'auto' });
+        video.className = 'thumb-loop';
+        video.setAttribute('aria-hidden', 'true');
+        thumb.appendChild(video);
+      }
+      video.play().then(() => video.classList.add('on')).catch(() => {});
+    };
+    const stop = () => { if (video) { video.classList.remove('on'); video.pause(); } };
+    card.addEventListener('mouseenter', start);
+    card.addEventListener('focus', start);
+    card.addEventListener('mouseleave', stop);
+    card.addEventListener('blur', stop);
+  });
+}

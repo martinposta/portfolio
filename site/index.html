@@ -59,11 +59,11 @@
     </div>
 
     <div class="tabs">
-      <div class="tab active" data-filter="all">all</div>
-      <div class="tab" data-filter="feature">feature</div>
-      <div class="tab" data-filter="vfx">vfx</div>
-      <div class="tab" data-filter="games">games</div>
-      <div class="tab" data-filter="shorts">shorts / others</div>
+      <button type="button" class="tab active" data-filter="all" aria-pressed="true">all</button>
+      <button type="button" class="tab" data-filter="feature" aria-pressed="false">feature</button>
+      <button type="button" class="tab" data-filter="vfx" aria-pressed="false">vfx</button>
+      <button type="button" class="tab" data-filter="games" aria-pressed="false">games</button>
+      <button type="button" class="tab" data-filter="shorts" aria-pressed="false">shorts / others</button>
     </div>
 
     <!-- ADMIN:GRID:START -->
@@ -102,7 +102,7 @@
       </a>
 
       <!-- The Last Whalesinger -->
-      <a class="card" data-cat="feature" data-lightbox 
+      <a class="card" role="button" tabindex="0" data-cat="feature" data-lightbox 
         data-title="The Last Whalesinger" data-desc="Team lead and Character animator" data-video="https://player.vimeo.com/video/1210909687" data-link="https://www.imdb.com/title/tt13518550/" data-link-label="IMDb">
         <div class="tape"></div><div class="cat-flag">Feature</div>
         <div class="thumb photo"><img src="/images/thumbs/tlws_thumb.jpg" alt="The Last Whale Singer" loading="lazy"></div>
@@ -111,7 +111,7 @@
       </a>
 
       <!-- Pyšná Princezna -->
-      <a class="card" data-cat="feature" data-lightbox data-pin="2" 
+      <a class="card" role="button" tabindex="0" data-cat="feature" data-lightbox data-pin="2" 
         data-title="Pyšná Princezna" data-desc="Team lead and Character animator" data-video="https://player.vimeo.com/video/1040551892" data-link="https://www.imdb.com/title/tt10996076/" data-link-label="IMDb">
         <div class="tape"></div><div class="cat-flag">Feature</div>
         <div class="thumb photo"><img src="/images/thumbs/pysna_thumb.jpg" alt="Pyšná Princezna" loading="lazy"></div>
@@ -120,7 +120,7 @@
       </a>
 
       <!-- The Black Demon -->
-      <a class="card" data-cat="vfx" data-lightbox data-pin="3" 
+      <a class="card" role="button" tabindex="0" data-cat="vfx" data-lightbox data-pin="3" 
         data-title="The Black Demon" data-desc="Creature and props animator, layout artist" data-video="https://player.vimeo.com/video/1045392736" data-link="https://www.imdb.com/title/tt10279472/" data-link-label="IMDb">
         <div class="tape"></div><div class="cat-flag">VFX</div>
         <div class="thumb photo"><img src="/images/thumbs/tbd_thumb.jpg" alt="The Black Demon" loading="lazy"></div>
@@ -137,7 +137,7 @@
       </a>
 
       <!-- Action animation workshop -->
-      <a class="card" data-cat="shorts" data-lightbox data-pin="3" 
+      <a class="card" role="button" tabindex="0" data-cat="shorts" data-lightbox data-pin="3" 
         data-title="Action" data-desc="animation workshop" data-video="https://player.vimeo.com/video/1040591743">
         <div class="tape"></div><div class="cat-flag">personal</div>
         <div class="thumb photo"><img src="/images/thumbs/action_thumb.jpg" alt="action" loading="lazy"></div>
@@ -146,7 +146,7 @@
       </a>
 
       <!-- A Garden Witch's Life -->
-      <a class="card" data-cat="games" data-lightbox 
+      <a class="card" role="button" tabindex="0" data-cat="games" data-lightbox 
         data-title="Garden Witch Life" data-desc="Gameplay and cinematic animator, character rigger, setdressing. Released for Steam, XBOX, Playstation 5 and Nintendo Switch" data-video="https://www.youtube.com/embed/SNdBVIpmoxY?si=SAorUUqqJCZ6k5d8" data-link="https://store.steampowered.com/app/1240450/A_Garden_Witchs_Life/" data-link-label="Buy on Steam">
         <div class="tape"></div><div class="cat-flag">Game</div>
         <div class="thumb photo"><img src="/images/thumbs/agwl_thumb.jpg" alt="A Garden Witch's Life" loading="lazy"></div>
@@ -155,7 +155,7 @@
       </a>
 
       <!-- The Last Train Home -->
-      <a class="card" data-cat="games" data-lightbox data-pin="4" 
+      <a class="card" role="button" tabindex="0" data-cat="games" data-lightbox data-pin="4" 
         data-title="The Last Train Home" data-desc="Had the opportunity to do MoCap recording and setting up animations of various soldier animations for the early vertical slice of the game. Didn't had the chance to work on the final build of the game but still I was glad to contribute." data-video="https://www.youtube.com/embed/q0lJ9A4AtFo?si=W1CNj3rYW_imEa8f" data-link="https://store.steampowered.com/app/1469610/Last_Train_Home/" data-link-label="Buy on Steam">
         <div class="tape"></div><div class="cat-flag">Game</div>
         <div class="thumb photo"><img src="/images/thumbs/tlth_thumb.jpg" alt="The Last Train Home" loading="lazy"></div>
@@ -164,7 +164,7 @@
       </a>
 
       <!-- Orc Animation -->
-      <a class="card" data-cat="shorts" data-lightbox data-pin="2" 
+      <a class="card" role="button" tabindex="0" data-cat="shorts" data-lightbox data-pin="2" 
         data-title="Orc" data-desc="personal animation test warcraft-style" data-video="https://player.vimeo.com/video/337816552">
         <div class="tape"></div><div class="cat-flag">personal</div>
         <div class="thumb photo"><img src="/images/thumbs/orc_thumb.jpg" alt="orc" loading="lazy"></div>
@@ -181,7 +181,7 @@
       </a>
 
       <!-- Tin Hearts -->
-      <a class="card" data-cat="games" data-lightbox 
+      <a class="card" role="button" tabindex="0" data-cat="games" data-lightbox 
         data-title="Tin Hearts" data-desc="Had the opportunity to help with a few keyframes cutscene animations. A small contribution, but still a fun one." data-video="https://www.youtube.com/embed/XgqxMM7IFMA?si=jnQzRRjJU3Ehz499" data-link="https://store.steampowered.com/app/1831700/Tin_Hearts/" data-link-label="Buy on Steam">
         <div class="tape"></div><div class="cat-flag">Game</div>
         <div class="thumb photo"><img src="/images/thumbs/tinhearts_thumb.jpg" alt="Tin Hearts" loading="lazy"></div>
@@ -190,7 +190,7 @@
       </a>
 
       <!-- Muppet Babies — S3 -->
-      <a class="card" data-cat="shorts" data-lightbox data-pin="3" 
+      <a class="card" role="button" tabindex="0" data-cat="shorts" data-lightbox data-pin="3" 
         data-title="Muppet Babies — Season 3" data-desc="Character animator and team lead for 5 episodes" data-video="https://player.vimeo.com/video/1040573198" data-link="https://www.imdb.com/title/tt6337766/" data-link-label="IMDb">
         <div class="tape"></div><div class="cat-flag">TV Series</div>
         <div class="thumb photo"><img src="/images/thumbs/muppets_thumb.jpg" alt="Muppet Babies" loading="lazy"></div>
@@ -199,7 +199,7 @@
       </a>
 
       <!-- Watersprite -->
-      <a class="card" data-cat="shorts" data-lightbox data-pin="2" 
+      <a class="card" role="button" tabindex="0" data-cat="shorts" data-lightbox data-pin="2" 
         data-title="Watersprite" data-desc="Creature animator" data-video="https://player.vimeo.com/video/644599858">
         <div class="tape"></div><div class="cat-flag">Short Film</div>
         <div class="thumb photo"><img src="/images/thumbs/perla_thumb.jpg" alt="Watersprite" loading="lazy"></div>
@@ -264,7 +264,7 @@
       </a>
 
       <!-- First -->
-      <a class="card" data-cat="shorts" data-lightbox 
+      <a class="card" role="button" tabindex="0" data-cat="shorts" data-lightbox 
         data-title="First" data-desc="FAMU, 3rd semester, stop motion puppets, technical supervisor - Michael Carrington" data-video="https://player.vimeo.com/video/187638920" data-link="" data-link-label="Link">
         <div class="tape"></div><div class="cat-flag">Short Film</div>
         <div class="thumb photo"><img src="/images/thumbs/first_thumb.jpg" alt="First" loading="lazy"></div>
@@ -273,7 +273,7 @@
       </a>
 
       <!-- Bearavity -->
-      <a class="card" data-cat="shorts" data-lightbox data-pin="4" 
+      <a class="card" role="button" tabindex="0" data-cat="shorts" data-lightbox data-pin="4" 
         data-title="Bearavity" data-desc="FAMU, 3rd semester, paper cutouts on glass, technical supervisor - Michael Carrington" data-video="https://player.vimeo.com/video/232418134" data-link="" data-link-label="Link">
         <div class="tape"></div><div class="cat-flag">Short Film</div>
         <div class="thumb photo"><img src="/images/thumbs/bearavity_thumb.jpg" alt="Bearavity" loading="lazy"></div>
@@ -282,7 +282,7 @@
       </a>
 
       <!-- Gravity -->
-      <a class="card" data-cat="shorts" data-lightbox 
+      <a class="card" role="button" tabindex="0" data-cat="shorts" data-lightbox 
         data-title="Gravity" data-desc="FAMU, 2nd semester, hand drawn animation, sound - Adam Bláha" data-video="https://player.vimeo.com/video/141916834" data-link="" data-link-label="Link">
         <div class="tape"></div><div class="cat-flag">Short Film</div>
         <div class="thumb photo"><img src="/images/thumbs/gravitace_thumb.jpg" alt="Gravity" loading="lazy"></div>
@@ -291,7 +291,7 @@
       </a>
 
       <!-- Evoluce -->
-      <a class="card" data-cat="shorts" data-lightbox data-pin="3" 
+      <a class="card" role="button" tabindex="0" data-cat="shorts" data-lightbox data-pin="3" 
         data-title="Evoluce" data-desc="FAMU, 1st semester, hand drawn animation, sound - Martin Stýblo" data-video="https://player.vimeo.com/video/103438970" data-link="" data-link-label="Link">
         <div class="tape"></div><div class="cat-flag">Short Film</div>
         <div class="thumb photo"><img src="/images/thumbs/evoluce_thumb.jpg" alt="Evoluce" loading="lazy"></div>
@@ -333,20 +333,5 @@
 <div data-include="/partials/footer.html"></div>
 
 <script src="/assets/include.js"></script>
-<script>
-  var tabs = document.querySelectorAll('.tab');
-  var cards = document.querySelectorAll('.card');
-  tabs.forEach(function(tab){
-    tab.addEventListener('click', function(){
-      tabs.forEach(function(t){t.classList.remove('active')});
-      tab.classList.add('active');
-      var f = tab.getAttribute('data-filter');
-      cards.forEach(function(card){
-        card.style.display = (f === 'all' || card.getAttribute('data-cat') === f) ? 'block' : 'none';
-      });
-    });
-  });
-</script>
-
 </body>
 </html>

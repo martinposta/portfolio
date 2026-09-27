@@ -63,15 +63,16 @@ function parseCards(inner) {
     const flagMatch = /<div class="cat-flag">([^<]*)<\/div>/.exec(body);
     const flag = flagMatch ? decodeEntities(flagMatch[1]) : '';
 
-    const thumbMatch = /<div class="thumb ([^"]+)">([\s\S]*?)<\/div>/.exec(body);
+    const thumbMatch = /<div class="thumb ([^"]+)"(?: data-loop="([^"]*)")?>([\s\S]*?)<\/div>/.exec(body);
     let thumb = null;
     if (thumbMatch) {
       const cls = thumbMatch[1];
-      const thumbInner = thumbMatch[2];
+      const thumbInner = thumbMatch[3];
       const img = /<img\s+src="([^"]+)"\s+alt="([^"]*)"/.exec(thumbInner);
       const icon = /<use\s+href="#([^"]+)"/.exec(thumbInner);
       if (cls === 'photo' && img) {
         thumb = { type: 'photo', src: decodeEntities(img[1]), alt: decodeEntities(img[2]) };
+        if (thumbMatch[2]) thumb.loop = decodeEntities(thumbMatch[2]);
       } else if (icon) {
         thumb = { type: 'icon', class: cls, icon: icon[1] };
       }
@@ -127,7 +128,8 @@ function parseCards(inner) {
 function renderThumb(thumb) {
   if (!thumb) return '<div class="thumb"></div>';
   if (thumb.type === 'photo') {
-    return `<div class="thumb photo"><img src="${encodeEntities(thumb.src)}" alt="${encodeEntities(thumb.alt || '')}" loading="lazy"></div>`;
+    const loop = thumb.loop ? ` data-loop="${encodeEntities(thumb.loop)}"` : '';
+    return `<div class="thumb photo"${loop}><img src="${encodeEntities(thumb.src)}" alt="${encodeEntities(thumb.alt || '')}" loading="lazy"></div>`;
   }
   return `<div class="thumb ${thumb.class}"><svg><use href="#${thumb.icon}"/></svg></div>`;
 }
@@ -152,7 +154,8 @@ function renderCard(card, opts) {
     if (it.link || it.linkLabel) {
       parts.push(`data-link="${encodeEntities(it.link)}" data-link-label="${encodeEntities(it.linkLabel)}"`);
     }
-    openTag = `<a class="${cls}" ${parts.join(' ')}>`;
+    // no href, so role + tabindex make it reachable and announced as a button
+    openTag = `<a class="${cls}" role="button" tabindex="0" ${parts.join(' ')}>`;
   } else if (card.interaction.type === 'page') {
     openTag = `<a class="${cls}" data-cat="${card.category}" href="${encodeEntities(card.interaction.href)}">`;
   } else {

@@ -344,3 +344,15 @@ body{overflow-wrap:break-word}
 .doodle-right{margin-left:auto;transform:rotate(3deg)}
 .doodle-left{margin-right:auto;transform:rotate(-4deg)}
 .doodle-center{margin-left:auto;margin-right:auto}
+
+/* ---- motion (include.js) ------------------------------------------- */
+.section-head h2{position:relative}
+.pencil-line{position:absolute;left:-4px;bottom:-9px;width:calc(100% + 12px);height:10px;overflow:visible;pointer-events:none}
+.pencil-line path{fill:none;stroke:var(--vfx);stroke-width:2.2;stroke-linecap:round;opacity:.75;
+  stroke-dasharray:1;stroke-dashoffset:1;transition:stroke-dashoffset .9s cubic-bezier(.6,.1,.3,1) .1s}
+.drawn .pencil-line path{stroke-dashoffset:0}
+.thumb-loop{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;opacity:0;transition:opacity .25s ease}
+.thumb-loop.on{opacity:1}
+.tab{transition:background-color .2s ease}
+.tab:focus-visible,.card:focus-visible{outline:2px solid var(--feature);outline-offset:3px}
+@media (prefers-reduced-motion:reduce){ .pencil-line path{transition:none} .thumb-loop{transition:none} }
