@@ -341,7 +341,7 @@
   }
 
   window.addEventListener('beforeunload', function(e){
-    if (diff().length){ e.preventDefault(); e.returnValue = ''; }
+    if (!window.AdminSwitching && diff().length){ e.preventDefault(); e.returnValue = ''; }
   });
 
   load();

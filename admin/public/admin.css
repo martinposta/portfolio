@@ -176,3 +176,8 @@ body.pages-app{height:100vh;display:flex;flex-direction:column}
 #pv{border:0;width:100%;height:100%;background:#fff;box-shadow:0 2px 10px rgba(0,0,0,.12)}
 .pv-stage.phone #pv{width:390px;max-width:100%}
 @media (max-width:900px){body.pages-app{height:auto}.work{grid-template-columns:1fr}.pv-col{height:85vh}}
+
+/* branch switcher */
+.branch-pick{display:inline-flex;align-items:center;gap:6px;font-size:12.5px;color:var(--ink-dim)}
+.branch-pick select{font:inherit;font-size:12.5px;padding:4px 6px;border:1px solid var(--line);border-radius:6px;background:#fff;color:var(--ink)}
+.banner a{color:inherit;font-weight:600}

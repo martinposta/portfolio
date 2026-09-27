@@ -126,7 +126,42 @@ function makeGit(repoDir) {
     }
   }
 
-  return { state, sync, publish, push, GitError, BRANCH };
+  // Branches this admin can switch to: only those whose own admin has this
+  // switcher. The admin's pages are served from the checked-out files, so a
+  // branch without it (the old redesign has no admin at all, an older
+  // feature branch has no switcher) would leave no way to switch back.
+  function branches() {
+    fetch();
+    const current = run(['rev-parse', '--abbrev-ref', 'HEAD']);
+    const refs = run(['for-each-ref', '--format=%(refname:short)', 'refs/heads', 'refs/remotes/' + REMOTE])
+      .split('\n').filter(Boolean).filter((r) => r !== REMOTE + '/HEAD' && r !== REMOTE);
+    const names = [...new Set(refs.map((r) => r.replace(new RegExp('^' + REMOTE + '/'), '')))];
+    const usable = names.filter((n) => {
+      const ref = refs.includes(n) ? n : REMOTE + '/' + n;
+      return run(['grep', '-q', '-F', '/api/checkout', ref, '--', 'admin/public/common.js'], { allowFail: true }) !== null;
+    });
+    return { current, branches: usable.sort((a, b) => (a === BRANCH ? -1 : b === BRANCH ? 1 : a.localeCompare(b))) };
+  }
+
+  // Switches the working copy. Refuses with uncommitted files anywhere, so a
+  // switch can never carry half-finished changes to another branch or lose
+  // them. A local branch that is only behind GitHub is fast-forwarded.
+  function checkout(name) {
+    const { branches: allowed } = branches();
+    if (!allowed.includes(name)) throw new GitError(`Unknown branch "${name}".`, 'branch');
+    const dirty = run(['status', '--porcelain', '--untracked-files=all'], { raw: true }).split('\n').filter(Boolean).map((l) => l.slice(3));
+    if (dirty.length) throw new GitError('Files here are not committed yet, so switching could lose them: ' + dirty.slice(0, 6).join(', ') + (dirty.length > 6 ? ' …' : '') + '. Publish them first.', 'dirty');
+    const local = run(['rev-parse', '--verify', '--quiet', 'refs/heads/' + name], { allowFail: true });
+    if (local) {
+      run(['checkout', '--quiet', name]);
+      run(['merge', '--ff-only', '--quiet', REMOTE + '/' + name], { allowFail: true });
+    } else {
+      run(['checkout', '--quiet', '-b', name, '--track', REMOTE + '/' + name]);
+    }
+    return state();
+  }
+
+  return { state, sync, publish, push, branches, checkout, GitError, BRANCH };
 }
 
 module.exports = { makeGit, GitError };

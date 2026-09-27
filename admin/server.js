@@ -91,7 +91,7 @@ function send(res, status, obj) {
 
 function sendError(res, e) {
   if (e instanceof GitError) {
-    const status = e.code === 'moved' || e.code === 'diverged' ? 409 : 500;
+    const status = e.code === 'moved' || e.code === 'diverged' || e.code === 'dirty' ? 409 : e.code === 'branch' ? 400 : 500;
     return send(res, status, { error: e.message, code: e.code, repo: e.details });
   }
   send(res, 500, { error: e.message });
@@ -251,6 +251,14 @@ const server = http.createServer((req, res) => {
     }
 
     // Cheap re-check (the page calls it when the tab regains focus).
+    if (url === '/api/branches' && req.method === 'GET') {
+      return send(res, 200, git.branches());
+    }
+
+    if (url === '/api/checkout' && req.method === 'POST') {
+      return readJSON(res, req, ({ branch }) => send(res, 200, git.checkout(String(branch || ''))));
+    }
+
     if (url === '/api/repo' && req.method === 'GET') {
       return send(res, 200, git.state({ fetch: true }));
     }

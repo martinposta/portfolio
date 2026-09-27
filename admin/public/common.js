@@ -46,7 +46,8 @@ window.AdminCommon = (function(){
     banner(null);
     if (s.problem === 'branch' || s.branch !== 'main'){
       state = 'bad'; label = 'on branch ' + s.branch;
-      banner('bad', '<b>This copy is on branch “' + esc(s.branch) + '”, not main.</b> Publishing is off until it is back on main.');
+      banner('bad', '<b>You are looking at the branch “' + esc(s.branch) + '”.</b> Publishing is off here, only main goes live. ' +
+        'See the site as it is on this branch: <a href="/" target="_blank">localhost:' + location.port + '/</a>. Switch back with “Branch” at the top.');
     } else if (!s.emailOk){
       state = 'bad'; label = 'main · ' + s.head + ' · commit email';
       banner('bad', '<b>This copy would commit as “' + esc(s.email || 'no email') + '”.</b> GitHub refuses pushes that expose a private address, so publishing is blocked. In the repo folder run <code>git config user.email 33331553+martinposta@users.noreply.github.com</code> and reload.');
@@ -92,6 +93,27 @@ window.AdminCommon = (function(){
     lastCheck = Date.now();
     api('/api/repo').then(function(s){ renderRepo(s); }).catch(function(){});
   });
+
+  // ---------- branch switcher ----------
+  // Switching reloads the whole editor: cards and pages differ per branch.
+  var branchSel = document.getElementById('branch');
+  function loadBranches(){
+    api('/api/branches').then(function(b){
+      branchSel.innerHTML = b.branches.map(function(n){ return '<option value="' + esc(n) + '"' + (n === b.current ? ' selected' : '') + '>' + esc(n) + (n === 'main' ? ' (live)' : '') + '</option>'; }).join('');
+      branchSel.dataset.current = b.current;
+    }).catch(function(){});
+  }
+  branchSel.addEventListener('change', function(){
+    var want = branchSel.value, was = branchSel.dataset.current;
+    var unsaved = hooks.unsaved();
+    if (unsaved.length && !confirm('Your unsaved edits here will be dropped:\n- ' + unsaved.map(function(c){ return c.t; }).join('\n- ') + '\n\nSwitch to “' + want + '” anyway?')){ branchSel.value = was; return; }
+    setStatus('Switching to ' + want + '…');
+    api('/api/checkout', json('POST', { branch: want })).then(function(){
+      window.AdminSwitching = true;   // the editors' leave-page warning stands down
+      location.reload();
+    }).catch(function(e){ branchSel.value = was; setStatus('Could not switch: ' + e.message, 'err'); });
+  });
+  loadBranches();
 
   // ---------- images ----------
   // Scales an image down in a canvas before upload: `short` limits the

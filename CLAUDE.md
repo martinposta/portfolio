@@ -160,3 +160,12 @@ identical after the fix.
 - Uploads: `POST /api/upload {target: thumbs|projects|doodles}`. Thumbs are
   shrunk to a 600 px shorter side, project photos to a 1600 px longer side,
   doodles are uploaded untouched (they may be animated).
+- **Branch switcher** (topbar "Branch", `POST /api/checkout`): lets Martin look
+  at a review branch (e.g. `animations`) as the local site at
+  http://localhost:4173/ without a terminal. Refuses with any uncommitted
+  file. Only offers branches whose own `admin/public/common.js` contains the
+  switcher: the admin UI is served from the checked-out files, so switching
+  to a branch without it (the old `redesign`, or a branch cut before
+  2026-09-28) would leave no way back. **Create review branches from a main
+  that has the switcher.** The running server keeps its in-memory code; a
+  branch that changes `admin/server.js` needs a restart to see those changes.
