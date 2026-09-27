@@ -12,8 +12,12 @@ function slugify(title) {
 function decodeEntities(s) {
   return s.replace(/&amp;/g, '&').replace(/&lt;/g, '<').replace(/&gt;/g, '>').replace(/&quot;/g, '"').replace(/&#39;/g, "'");
 }
+// Escapes everything that can break out of text or a double-quoted
+// attribute. It used to escape only "&", so a description containing a
+// double quote silently cut the attribute (and the text) short.
 function encodeEntities(s) {
-  return s.replace(/&/g, '&amp;');
+  return String(s == null ? '' : s)
+    .replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
 }
 
 // Find `<div class="grid">` ... matching `</div>` via depth counting.
@@ -67,7 +71,7 @@ function parseCards(inner) {
       const img = /<img\s+src="([^"]+)"\s+alt="([^"]*)"/.exec(thumbInner);
       const icon = /<use\s+href="#([^"]+)"/.exec(thumbInner);
       if (cls === 'photo' && img) {
-        thumb = { type: 'photo', src: img[1], alt: decodeEntities(img[2]) };
+        thumb = { type: 'photo', src: decodeEntities(img[1]), alt: decodeEntities(img[2]) };
       } else if (icon) {
         thumb = { type: 'icon', class: cls, icon: icon[1] };
       }
@@ -85,15 +89,15 @@ function parseCards(inner) {
         type: 'lightbox',
         title: attrs['data-title'] ? decodeEntities(attrs['data-title']) : '',
         desc: attrs['data-desc'] ? decodeEntities(attrs['data-desc']) : '',
-        video: attrs['data-video'] || '',
-        link: attrs['data-link'] || '',
-        linkLabel: attrs['data-link-label'] || '',
+        video: decodeEntities(attrs['data-video'] || ''),
+        link: decodeEntities(attrs['data-link'] || ''),
+        linkLabel: decodeEntities(attrs['data-link-label'] || ''),
         pin: attrs['data-pin'] || ''
       };
     } else if ((attrs.href || '').startsWith('/projects/')) {
-      interaction = { type: 'page', href: attrs.href };
+      interaction = { type: 'page', href: decodeEntities(attrs.href) };
     } else {
-      interaction = { type: 'link', href: attrs.href || '' };
+      interaction = { type: 'link', href: decodeEntities(attrs.href || '') };
     }
 
     const card = {
@@ -123,7 +127,7 @@ function parseCards(inner) {
 function renderThumb(thumb) {
   if (!thumb) return '<div class="thumb"></div>';
   if (thumb.type === 'photo') {
-    return `<div class="thumb photo"><img src="${thumb.src}" alt="${encodeEntities(thumb.alt || '')}" loading="lazy"></div>`;
+    return `<div class="thumb photo"><img src="${encodeEntities(thumb.src)}" alt="${encodeEntities(thumb.alt || '')}" loading="lazy"></div>`;
   }
   return `<div class="thumb ${thumb.class}"><svg><use href="#${thumb.icon}"/></svg></div>`;
 }
@@ -138,15 +142,15 @@ function renderCard(card) {
     if (it.pin) parts.push(`data-pin="${it.pin}"`);
     parts.push(`\n        data-title="${encodeEntities(it.title)}"`);
     parts.push(`data-desc="${encodeEntities(it.desc)}"`);
-    parts.push(`data-video="${it.video}"`);
+    parts.push(`data-video="${encodeEntities(it.video)}"`);
     if (it.link || it.linkLabel) {
-      parts.push(`data-link="${it.link}" data-link-label="${encodeEntities(it.linkLabel)}"`);
+      parts.push(`data-link="${encodeEntities(it.link)}" data-link-label="${encodeEntities(it.linkLabel)}"`);
     }
     openTag = `<a class="card" ${parts.join(' ')}>`;
   } else if (card.interaction.type === 'page') {
-    openTag = `<a class="card" data-cat="${card.category}" href="${card.interaction.href}">`;
+    openTag = `<a class="card" data-cat="${card.category}" href="${encodeEntities(card.interaction.href)}">`;
   } else {
-    openTag = `<a class="card" data-cat="${card.category}" href="${card.interaction.href}" target="_blank" rel="noopener">`;
+    openTag = `<a class="card" data-cat="${card.category}" href="${encodeEntities(card.interaction.href)}" target="_blank" rel="noopener">`;
   }
   lines.push(`      ${openTag}`);
   lines.push(`        <div class="tape"></div><div class="cat-flag">${encodeEntities(card.flag)}</div>`);

@@ -1,111 +1,99 @@
 # martinposta.com — project notes for Claude Code
 
 Portfolio site for Martin Pošta (character animator / rigger / indie game
-developer, Prague). Redesign from an old Bootstrap site to a hand-built
-"notebook / exposure sheet" themed static site. **Static only — no build
-step, no Jekyll, no framework.** Hosted on GitHub Pages with a custom
-domain (see `CNAME.txt`).
+developer, Prague). Hand-built "notebook / exposure sheet" themed static
+site. **The published site is static — no framework, no bundler.** The admin
+tool generates parts of the HTML and commits the result; GitHub Pages serves
+the files as they are.
 
-## Architecture
+## Repository layout
 
-- `index.html` — homepage: hero, embedded showreel, and the `#portfolio`
-  gallery grid (category tabs + cards).
+```
+site/        everything GitHub Pages publishes — nothing else goes live
+  index.html        homepage; the gallery grid between ADMIN:GRID markers is generated
+  projects/*.html   one page per project (hand-written today, generated later)
+  assets/           notebook.css (whole design system), include.js
+  partials/         header/footer, injected by include.js
+  images/           thumbs/, projects/, texture/
+  CNAME, posta_resume.pdf
+content/     source data the admin edits (projects.json = gallery cards)
+admin/       local Node admin tool (zero dependencies)
+design/      working files that must not be published (style guide, .afpub)
+```
+
+Repo: `martinposta/portfolio` (public). Branches:
+- `main` — this work. Created from `redesign`; history continues from it.
+- `redesign` — what martinposta.com serves **today** (Pages source = this
+  branch, legacy build). Uploaded through the GitHub web UI in July 2026.
+- `gh-pages` — the old Bootstrap site. `master` — only the 2019 README.
+
+Until the switch-over, pushing to `main` changes nothing on the live site.
+The switch is: Pages source → GitHub Actions workflow that uploads `site/`.
+`redesign` stays as the instant rollback.
+
+## Site architecture
+
 - `assets/notebook.css` — the entire design system (typewriter/handwritten
   fonts, spiral-notebook motifs, coffee-stain textures, tape/pin variants,
   lightbox, gallery card/thumb styles). Every page links this one file.
-- `assets/include.js` — three jobs: (1) `data-include="/partials/x.html"`
-  fetch-based header/footer injection so nav edits happen in one place, (2)
-  the shared lightbox (`openLightbox`/`closeLightbox`, driven by each
-  card's `data-*` attributes), (3) obfuscated-email + mobile menu toggle.
-- `partials/header.html`, `partials/footer.html` — injected on every page.
-- `projects/*.html` — one hand-written page per project that has a
-  dedicated page (as opposed to an external link or a lightbox). All follow
-  the same template: header include → `.back-link` → `.hero` with
-  `.project-meta` tape-labels → `.prose` → one or more `.screen`/`.reel-card`
-  video embeds (`.pin-2/3/4` classes vary the paper color/rotation) → footer
-  include. Copy an existing one as a starting point for a new page.
-- `data/projects.json` — **source of truth for the homepage gallery grid**
-  (see Admin tool below). Do not hand-edit `index.html`'s grid directly
-  once this exists — use the admin tool so the two stay in sync.
+- `assets/include.js` — (1) `data-include` fetch-based header/footer
+  injection, (2) the shared lightbox driven by each card's `data-*`
+  attributes, (3) obfuscated email + mobile menu toggle.
+- Project pages share one template: header include → `.back-link` → `.hero`
+  with `.project-meta` tape-labels → `.prose` → `.screen`/`.reel-card` video
+  or photo frames (`.pin-2/3/4` vary paper colour/rotation) → footer include.
+- Every page needs `<meta name="viewport">` — without it phones render the
+  980 px desktop layout and the 640 px media queries never fire. It was
+  missing on all pages until 2026-09-27.
 
-### Gallery card interaction types (`data/projects.json` → rendered into
-`index.html`'s `<!-- ADMIN:GRID:START -->…<!-- ADMIN:GRID:END -->` block)
+### Gallery cards (`content/projects.json` → `site/index.html`)
 
-Each card is one of:
-- **`link`** — external link (IMDb, Steam, a studio site…), opens in a new tab.
-- **`page`** — links to one of the `/projects/*.html` pages above.
-- **`lightbox`** — opens the shared lightbox with a video embed + description
-  + optional link button, no separate page needed.
+Each card is `link` (external, new tab), `page` (a `/projects/*.html`) or
+`lightbox` (video + description + optional link, no separate page). Thumbs are
+a photo in `images/thumbs/` or one of the inline SVG `<symbol>`s in
+`index.html`. Do not hand-edit the grid block — use the admin, or run
+`admin/tools/resync-from-html.js` afterwards.
 
-Thumbnails are either a real photo (`/images/thumbs/*.jpg`) or, for the
-handful of studio/dev projects without a still (Little Flames Rising,
-Control), one of the SVG icon symbols defined inline in `index.html`.
+## Admin tool (`admin/`)
 
-## Admin tool (`admin-tool/`)
+`node admin/server.js` (or `start.command` / `start.bat`) → http://localhost:4173.
+Preview renders unsaved edits into a copy of the homepage without writing;
+Save writes `content/projects.json` and regenerates the grid block.
+`admin/lib/cards.js` is the parser/renderer shared by save, preview and
+resync. **Everything written into HTML goes through `encodeEntities`** —
+until 2026-09-27 it escaped only `&`, and a `"` in a description silently cut
+the attribute and the text short. Round trip of all 28 real cards verified
+identical after the fix.
 
-A local, zero-dependency Node.js app (built-ins only — **no `npm install`
-needed**) for editing the gallery without hand-editing HTML. Mirrors the
-pattern of Martin's other local tools (e.g. the civitai-viewer randomizer):
-double-click a launcher, use a localhost UI.
+## Plan (agreed 2026-09-27)
 
-**Run it:** double-click `admin-tool/start.command` (Mac) or
-`admin-tool/start.bat` (Windows), or `node admin-tool/server.js`. Opens
-http://localhost:4173.
+1. ✅ Viewport meta, escaping, repo under git, folder split into site/content/admin.
+2. GitHub Actions workflow publishing `site/`; switch Pages from `redesign`.
+3. Admin ↔ git: fetch + fast-forward pull on start, re-fetch before every
+   save (refuse if `main` moved), commit + push on save, warn about files not
+   in git. Drafts: `visible:false` cards are committed but never rendered into
+   the HTML (hiding them with CSS would leave them in the page source). The
+   repo is public, so drafts are visible on GitHub — accepted.
+   `.gitattributes` with LF line endings before the Windows copy exists.
+4. Admin: resize images in the browser (canvas → WebP) before upload, refuse
+   silent overwrites, validate category / video links / page paths.
+5. Project pages as block lists in `content/pages/*.json`, generated into
+   `site/projects/*.html` (block types: text, heading, video, photos, buttons,
+   credit card, doodle). Concept: https://claude.ai/artifact/3kHaqxoY8cHXLV2eqHT4FR
+   (gallery concept: https://claude.ai/artifact/UVrxmPhpBE4NFG1cwrtUBK).
+6. Animation: hover loops on cards, a flipbook/doodle system
+   (`images/doodles/`, SVG/PNG/WebM, static or animated), cards reshuffling
+   with overshoot on tab change, pencil-drawn heading underlines, lightbox
+   landing like a pinned sheet. All respect `prefers-reduced-motion`.
+7. Bake header/footer into the HTML at publish time, meta/OG tags,
+   self-hosted fonts.
+8. Windows + Proxmox copies of the admin (deploy key, Tailscale) — last.
 
-- **Reload from disk** — re-reads `data/projects.json`.
-- **Preview** — POSTs the current *unsaved* edits to `/api/preview`, which
-  renders them into a full copy of `index.html` (served with a red "PREVIEW
-  — unsaved changes" banner) using the real `notebook.css`/thumbnails/
-  header/footer, and opens it in a new tab. **Nothing is written to disk.**
-  Use this before publishing to visually check a change.
-- **Save & publish to index.html** — writes `data/projects.json`, backs up
-  the current `index.html` into `backup/` (timestamped), then regenerates
-  the grid block in `index.html` in place. Everything outside that block
-  (hero, header/footer includes, script tags, lightbox markup) is left
-  untouched.
-- **+ Add new card** / edit / delete / drag-to-reorder (⠿ handle) for each
-  card; thumbnail upload writes straight into `images/thumbs/`.
-- `admin-tool/lib/cards.js` — the parser/renderer shared by save & preview
-  (regex-based, tag-depth-aware, no HTML parser dependency).
-- `admin-tool/tools/resync-from-html.js` — safety net: if `index.html` is
-  ever hand-edited directly, run `node tools/resync-from-html.js` (from
-  `admin-tool/`) to re-derive `data/projects.json` from it again.
+Unused images kept for now (ask Martin): `images/projects/ttvr_set1-3.png`,
+`ttvr_all.jpeg`, `scaleRef.jpg`.
 
-The parser/renderer round-trip was verified against the real `index.html`
-(28 cards) before this was wired up — round-trips structurally exactly,
-modulo a couple of cosmetically-empty `data-link=""` attributes that have
-zero behavioral difference.
+## Local preview
 
-## Status (as of this session)
-
-Done:
-- Full redesign shipped locally: homepage gallery (28 cards across
-  feature/vfx/games/shorts), 7 dedicated project pages, shared
-  header/footer/lightbox/textures, English copy, mobile menu, obfuscated
-  email, coffee-stain/photo texture, 4 lightbox/pin background variants.
-- Gallery data extracted into `data/projects.json`; `index.html`'s grid is
-  now generated from it via the admin tool (markers added on first Save).
-- Admin tool v1 built: CRUD + drag reorder + thumbnail upload + Preview +
-  Save & publish + Mac/Windows launchers, verified end-to-end against the
-  real site files on this machine.
-- Cleaned up leftover placeholder-note wrapper tags in `neil.html`,
-  `plodymraku.html`, `figurespacing.html` now that their real
-  behind-the-scenes photos are in place.
-
-Not done yet / open threads:
-- **GitHub Pages deployment**: current plan is a branch on the existing
-  `martinposta/portfolio` repo (keep `main` live), switch Pages source once
-  verified, and confirm a `CNAME` exists on that branch too. Not yet
-  executed from a Claude Code session — this is Martin's own git/GitHub
-  workflow.
-- **Remote access for the admin tool**: Martin plans to eventually move
-  this app to his Proxmox homelab for remote access instead of only
-  localhost. Before exposing it beyond localhost: **it currently has zero
-  authentication** — add at minimum a shared secret / basic auth in front
-  of it (e.g. a reverse proxy) before it's reachable off the local machine.
-  The server already binds to all interfaces by default, so no code change
-  is required for reachability — only for auth.
-- Thumbnail uploads are stored as-is (no auto-resize/compression yet).
-- Reordering is a simple drag handle (no touch support yet).
-- The individual `/projects/*.html` pages are still hand-written — the
-  admin tool only manages the homepage gallery grid, not project pages.
+`.claude/launch.json` has `site` (python static server on :8000, serving
+`site/` as the web root, so root-relative links work) and `admin` (:4173).
+`include.js` needs http(s), not `file://`.

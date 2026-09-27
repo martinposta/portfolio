@@ -15,7 +15,7 @@ No `npm install` needed — the whole tool is plain Node.js, zero dependencies.
 
 ## What it does
 
-- Reads/writes **data/projects.json** — this is the source of truth for
+- Reads/writes **content/projects.json** — this is the source of truth for
   every card in the "Portfolio" gallery on the homepage (title, category,
   role text, thumbnail, and what happens when you click it: external link,
   a project page, or the lightbox with video + description).
@@ -23,14 +23,14 @@ No `npm install` needed — the whole tool is plain Node.js, zero dependencies.
   page — real `notebook.css`, real header/footer, real thumbnails — with a
   red "PREVIEW" banner, and opens it in a new tab. **Nothing is written to
   disk.** Use this to visually check a change before publishing it.
-- **Save & publish to index.html** writes `data/projects.json` *and*
-  regenerates the `<div class="grid">…</div>` block inside `../index.html`
+- **Save & publish to index.html** writes `content/projects.json` *and*
+  regenerates the `<div class="grid">…</div>` block inside `site/index.html`
   to match — everything else on the page (hero, header/footer, lightbox
   markup, script tags) is left completely untouched.
-- Before every save it drops a timestamped backup of the previous
-  `index.html` into `../backup/`, so you can always recover an older version.
+- Both files are in git, so every earlier version can be recovered from the
+  history. (The old `backup/` folder of timestamped copies is gone.)
 - Uploading a new thumbnail image writes it straight into
-  `../images/thumbs/` and fills in its path for you.
+  `site/images/thumbs/` and fills in its path for you.
 
 ## Adding a new project
 
@@ -51,8 +51,8 @@ No `npm install` needed — the whole tool is plain Node.js, zero dependencies.
 
 ## If index.html ever gets hand-edited directly
 
-Run `node tools/resync-from-html.js` (from this `admin-tool` folder) to
-re-read the grid out of `index.html` and overwrite `data/projects.json` to
+Run `node tools/resync-from-html.js` (from this `admin` folder) to
+re-read the grid out of `index.html` and overwrite `content/projects.json` to
 match again. It only touches the JSON file, never `index.html`.
 
 ## Notes / limits (first version)

@@ -4,11 +4,11 @@
  * ------------------------------------------
  * Zero-dependency Node.js server (built-ins only, so `npm install` is never
  * required). Serves a small local UI for editing the gallery cards on
- * index.html, backed by data/projects.json as the source of truth.
+ * site/index.html, backed by content/projects.json as the source of truth.
  *
- * "Save & publish" writes data/projects.json AND regenerates the
- * <div class="grid">...</div> block inside ../index.html between the
- * ADMIN:GRID markers, after making a timestamped backup copy. The rest of
+ * "Save & publish" writes content/projects.json AND regenerates the
+ * <div class="grid">...</div> block inside site/index.html between the
+ * ADMIN:GRID markers. Both files are in git, so git history is the backup. The rest of
  * index.html (hero, header/footer includes, script tags) is left untouched.
  *
  * "Preview" renders the same thing WITHOUT writing anything to disk, so you
@@ -27,10 +27,10 @@ const path = require('path');
 const crypto = require('crypto');
 const { parseCards, renderGrid, findGridBlock } = require('./lib/cards');
 
-const ROOT = path.join(__dirname, '..');           // site root (…/animovane portfolio)
-const DATA_FILE = path.join(ROOT, 'data', 'projects.json');
+const REPO = path.join(__dirname, '..');
+const ROOT = path.join(REPO, 'site');             // what GitHub Pages publishes
+const DATA_FILE = path.join(REPO, 'content', 'projects.json');
 const INDEX_FILE = path.join(ROOT, 'index.html');
-const BACKUP_DIR = path.join(ROOT, 'backup');
 const THUMBS_DIR = path.join(ROOT, 'images', 'thumbs');
 const PUBLIC_DIR = path.join(__dirname, 'public');
 const PORT = 4173;
@@ -99,17 +99,11 @@ function buildUpdatedHtml(cards) {
 }
 
 function saveCardsAndPublish(cards) {
-  // 1) write data/projects.json
+  // 1) write content/projects.json
   fs.mkdirSync(path.dirname(DATA_FILE), { recursive: true });
   fs.writeFileSync(DATA_FILE, JSON.stringify(cards, null, 2), 'utf8');
 
-  // 2) backup current index.html
-  fs.mkdirSync(BACKUP_DIR, { recursive: true });
-  const stamp = new Date().toISOString().replace(/[:.]/g, '-');
-  const currentHtml = fs.readFileSync(INDEX_FILE, 'utf8');
-  fs.writeFileSync(path.join(BACKUP_DIR, `index.${stamp}.html`), currentHtml, 'utf8');
-
-  // 3) regenerate the grid block between markers and write it for real
+  // 2) regenerate the grid block between markers and write it for real
   const updated = buildUpdatedHtml(cards);
   fs.writeFileSync(INDEX_FILE, updated, 'utf8');
 }
