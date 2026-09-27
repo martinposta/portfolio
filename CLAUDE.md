@@ -89,9 +89,6 @@ identical after the fix.
    self-hosted fonts.
 8. Windows + Proxmox copies of the admin (deploy key, Tailscale) — last.
 
-Unused images kept for now (ask Martin): `images/projects/ttvr_set1-3.png`,
-`ttvr_all.jpeg`, `scaleRef.jpg`.
-
 ## Local preview
 
 `.claude/launch.json` has `site` (python static server on :8000, serving
