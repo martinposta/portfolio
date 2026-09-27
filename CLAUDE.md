@@ -21,15 +21,18 @@ admin/       local Node admin tool (zero dependencies)
 design/      working files that must not be published (style guide, .afpub)
 ```
 
-Repo: `martinposta/portfolio` (public). Branches:
-- `main` — this work. Created from `redesign`; history continues from it.
-- `redesign` — what martinposta.com serves **today** (Pages source = this
-  branch, legacy build). Uploaded through the GitHub web UI in July 2026.
+Repo: `martinposta/portfolio` (public, default branch `main`). Branches:
+- `main` — the site. Created from `redesign`; history continues from it.
+  **Every push to main that touches `site/` goes live** (~1 min):
+  `.github/workflows/pages.yml` uploads `site/` and nothing else.
+- `redesign` — what Pages served until 2026-09-27 (uploaded through the
+  GitHub web UI in July). Kept as the rollback: Settings → Pages → source
+  "Deploy from a branch: redesign". The `github-pages` environment allows
+  deploys from `main` and `redesign` only.
 - `gh-pages` — the old Bootstrap site. `master` — only the 2019 README.
 
-Until the switch-over, pushing to `main` changes nothing on the live site.
-The switch is: Pages source → GitHub Actions workflow that uploads `site/`.
-`redesign` stays as the instant rollback.
+Cloudflare sits in front of the domain and caches pages for ~10 minutes, so
+a fresh deploy can take that long to show without a cache-busting `?v=`.
 
 ## Site architecture
 
@@ -44,7 +47,15 @@ The switch is: Pages source → GitHub Actions workflow that uploads `site/`.
   or photo frames (`.pin-2/3/4` vary paper colour/rotation) → footer include.
 - Every page needs `<meta name="viewport">` — without it phones render the
   980 px desktop layout and the 640 px media queries never fire. It was
-  missing on all pages until 2026-09-27.
+  missing on all pages until 2026-09-27, so the phone rules at the end of
+  `notebook.css` are new and were measured, not assumed: 2 gallery columns
+  below 760 px, narrower spine/gutters below 640 px.
+- **Decorations that hang past the edge (coffee ring, crumbs) widen the page
+  on a phone.** They are clipped with `overflow-x:clip` on `.wrap`/`footer`
+  below 1240 px. Clipping `html` or `body` does not work: the phone sizes
+  its layout viewport to the content on load (innerWidth 499 on a 375
+  screen) before that applies. How to check: every page in a 375 px iframe,
+  compare `scrollWidth` with `innerWidth`.
 
 ### Gallery cards (`content/projects.json` → `site/index.html`)
 
@@ -68,14 +79,16 @@ identical after the fix.
 ## Plan (agreed 2026-09-27)
 
 1. ✅ Viewport meta, escaping, repo under git, folder split into site/content/admin.
-2. GitHub Actions workflow publishing `site/`; switch Pages from `redesign`.
+2. ✅ GitHub Actions workflow publishing `site/`; Pages switched from `redesign` (2026-09-27).
 3. ✅ Admin ↔ git (2026-09-27, admin/lib/git.js): fetch + fast-forward pull on start, re-fetch before every
    save (refuse if `main` moved), commit + push on save, warn about files not
    in git. Drafts: `visible:false` cards are committed but never rendered into
    the HTML (hiding them with CSS would leave them in the page source). The
    repo is public, so drafts are visible on GitHub — accepted.
-4. Admin: resize images in the browser (canvas → WebP) before upload, refuse
-   silent overwrites, validate category / video links / page paths.
+4. ✅ Admin: thumbnails resized in the browser (shorter side 600 px, WebP;
+   JPEG where the browser cannot encode WebP), uploads never silently
+   overwrite, server validates category / links / page paths / icons / video
+   links, pasted Vimeo/YouTube page links become player URLs.
 5. Project pages as block lists in `content/pages/*.json`, generated into
    `site/projects/*.html` (block types: text, heading, video, photos, buttons,
    credit card, doodle). Concept: https://claude.ai/artifact/3kHaqxoY8cHXLV2eqHT4FR
@@ -109,9 +122,15 @@ identical after the fix.
   through Cloudflare, so GitHub never gets a certificate and its
   "Enforce HTTPS" switch cannot be turned on. The http→https redirect is
   Cloudflare's "Always Use HTTPS" (owner's dashboard).
-- Claude Code sessions opened from another project keep that project's
-  `.claude/launch.json` for the preview tool — open a session in this folder
-  to use the `site`/`admin` configs.
+- The Browser preview tool reads `.claude/launch.json` from the folder the
+  Claude Code session **started** in, even after the session moves. Started
+  from TheBook it only saw TheBook's configs; the portfolio ones were added
+  there temporarily for testing and removed again. Start sessions for this
+  project in this folder.
+- Testing the admin in the browser works on the real repo: never click
+  Publish there while testing, it pushes to main and goes live. Test publish
+  flows against a throwaway clone (`git clone --bare . /tmp/x.git`, clone
+  that, run `PORT=4199 node admin/server.js` inside it).
 - **Every clone needs `git config user.email 33331553+martinposta@users.noreply.github.com`.**
   The GitHub account blocks pushes that would publish the private address
   (GH007), and the admin's publish would fail on its push step. Set on the

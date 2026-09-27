@@ -43,6 +43,9 @@ const GRID_END = '<!-- ADMIN:GRID:END -->';
 
 const CATEGORIES = ['feature', 'vfx', 'games', 'shorts'];   // must match the tabs in index.html
 const KINDS = ['link', 'page', 'lightbox'];
+// What the lightbox iframe can play. The admin turns pasted page links into these.
+const VIDEO_EMBED = /^https:\/\/(player\.vimeo\.com\/video\/\d+|www\.youtube(-nocookie)?\.com\/embed\/[\w-]{11})([?#].*)?$/;
+const THUMB_TYPES = /\.(jpe?g|png|webp)$/i;
 
 // Site asset paths (real site files) that the preview page needs to load
 // with the exact same root-relative URLs the live site uses.
@@ -114,6 +117,8 @@ function validateCards(cards) {
       if (!/^\/projects\/[\w-]+\.html$/.test(p) || !fs.existsSync(path.join(ROOT, p))) return `${name}: project page ${p || '(empty)'} does not exist`;
     }
     if (it.type === 'link' && !/^https?:\/\//.test(it.href || '')) return `${name}: the link must start with http:// or https://`;
+    if (it.type === 'lightbox' && it.video && !VIDEO_EMBED.test(it.video)) return `${name}: the video must be a Vimeo or YouTube link (got ${it.video})`;
+    if (it.type === 'lightbox' && it.link && !/^https?:\/\//.test(it.link)) return `${name}: the extra link must start with http:// or https://`;
     if (c.thumb && c.thumb.type === 'icon' && !icons.includes(c.thumb.icon)) return `${name}: unknown icon ${c.thumb.icon}`;
   }
   return null;
@@ -209,6 +214,7 @@ const server = http.createServer((req, res) => {
       return readJSON(res, req, ({ filename, dataBase64, overwrite }) => {
         if (!filename || !dataBase64) return send(res, 400, { error: 'missing filename or dataBase64' });
         const safeName = filename.replace(/[^a-zA-Z0-9_.-]/g, '_');
+        if (!THUMB_TYPES.test(safeName)) return send(res, 400, { error: 'Thumbnails must be JPG, PNG or WebP.' });
         const dest = path.join(THUMBS_DIR, safeName);
         // An upload with the name of an existing file used to replace it
         // silently — and with it the thumbnail of whichever card used it.

@@ -272,28 +272,82 @@
     r.addEventListener('change', function(){ showRadioGroup('interaction', r.value); });
   });
 
-  function upload(file, overwrite){
-    var reader = new FileReader();
-    reader.onload = function(){
-      setStatus('Uploading thumbnail…');
-      api('/api/upload-thumb', json('POST', { filename: file.name, dataBase64: reader.result, overwrite: !!overwrite }))
-        .then(function(res){
-          form.elements.thumbSrc.value = res.path;
-          document.getElementById('thumb-preview').src = res.path + '?t=' + Date.now();
-          setStatus('Thumbnail uploaded', 'ok');
-        }).catch(function(e){
-          if (e.data && e.data.code === 'exists'){
-            if (confirm(e.message + '.\n\nReplace it? Every card using that file will show the new image.')) upload(file, true);
-            else setStatus('Upload cancelled. Rename the file and try again.', 'err');
-            return;
-          }
-          setStatus('Upload failed: ' + e.message, 'err');
-        });
-    };
-    reader.readAsDataURL(file);
+  // Thumbnails show as a square of ~280 css px (560 on a 2x screen), so the
+  // shorter side is scaled down to THUMB_SHORT before upload. The canvas draws
+  // at the target size in one step; the browser's own resampling is fine for
+  // a downscale of this ratio. Never upscales.
+  var THUMB_SHORT = 600, THUMB_QUALITY = 0.82;
+  function kb(n){ return Math.round(n / 1024) + ' KB'; }
+  function shrink(file){
+    return new Promise(function(resolve, reject){
+      if (!/^image\/(jpeg|png|webp)$/.test(file.type)) return reject(new Error('Use a JPG, PNG or WebP image.'));
+      var url = URL.createObjectURL(file), img = new Image();
+      img.onload = function(){
+        URL.revokeObjectURL(url);
+        var scale = Math.min(1, THUMB_SHORT / Math.min(img.naturalWidth, img.naturalHeight));
+        var w = Math.round(img.naturalWidth * scale), h = Math.round(img.naturalHeight * scale);
+        var c = document.createElement('canvas'); c.width = w; c.height = h;
+        c.getContext('2d').drawImage(img, 0, 0, w, h);
+        // Safari cannot encode WebP and hands back a PNG instead: fall back to JPEG.
+        c.toBlob(function(blob){
+          if (blob && blob.type === 'image/webp') return resolve({ blob: blob, ext: 'webp', w: w, h: h, from: img.naturalWidth + ' × ' + img.naturalHeight });
+          c.toBlob(function(jpg){ resolve({ blob: jpg, ext: 'jpg', w: w, h: h, from: img.naturalWidth + ' × ' + img.naturalHeight }); }, 'image/jpeg', 0.85);
+        }, 'image/webp', THUMB_QUALITY);
+      };
+      img.onerror = function(){ URL.revokeObjectURL(url); reject(new Error('The file could not be read as an image.')); };
+      img.src = url;
+    });
+  }
+
+  function upload(file, overwrite, prepared){
+    var ready = prepared ? Promise.resolve(prepared) : shrink(file);
+    setStatus('Resizing…');
+    ready.then(function(p){
+      var name = file.name.replace(/\.[^.]+$/, '') + '.' + p.ext;
+      var reader = new FileReader();
+      reader.onload = function(){
+        setStatus('Uploading thumbnail…');
+        api('/api/upload-thumb', json('POST', { filename: name, dataBase64: reader.result, overwrite: !!overwrite }))
+          .then(function(res){
+            form.elements.thumbSrc.value = res.path;
+            document.getElementById('thumb-preview').src = res.path + '?t=' + Date.now();
+            setStatus('Uploaded ' + p.from + ', ' + kb(file.size) + ' → ' + p.w + ' × ' + p.h + ' ' + p.ext.toUpperCase() + ', ' + kb(p.blob.size), 'ok');
+          }).catch(function(e){
+            if (e.data && e.data.code === 'exists'){
+              if (confirm(e.message + '.\n\nReplace it? Every card using that file will show the new image.')) upload(file, true, p);
+              else setStatus('Upload cancelled. Rename the file and try again.', 'err');
+              return;
+            }
+            setStatus('Upload failed: ' + e.message, 'err');
+          });
+      };
+      reader.readAsDataURL(p.blob);
+    }).catch(function(e){ setStatus('Upload failed: ' + e.message, 'err'); });
   }
   document.getElementById('thumb-upload').addEventListener('change', function(ev){
     if (ev.target.files[0]) upload(ev.target.files[0], false);
+    ev.target.value = '';   // picking the same file again must fire change again
+  });
+
+  // Accepts whatever gets pasted — a vimeo.com page, a youtu.be share link —
+  // and stores the player URL the lightbox iframe needs. Unknown links are
+  // left as typed; the server then refuses them with a readable message.
+  function embedUrl(u){
+    u = (u || '').trim();
+    // already a player URL (possibly with its own ?title=0 options): keep it
+    if (/^https:\/\/(player\.vimeo\.com\/video\/\d|www\.youtube(-nocookie)?\.com\/embed\/)/.test(u)) return u;
+    var m = /vimeo\.com\/(?:video\/)?(\d+)(?:\/([0-9a-f]+))?/.exec(u);
+    if (m){
+      var h = /[?&]h=([0-9a-f]+)/.exec(u);
+      var hash = m[2] || (h && h[1]);
+      return 'https://player.vimeo.com/video/' + m[1] + (hash ? '?h=' + hash : '');
+    }
+    m = /(?:youtu\.be\/|youtube(?:-nocookie)?\.com\/(?:watch\?(?:.*&)?v=|embed\/|shorts\/))([\w-]{11})/.exec(u);
+    if (m) return 'https://www.youtube-nocookie.com/embed/' + m[1];
+    return u;
+  }
+  form.elements.lbVideo.addEventListener('change', function(){
+    form.elements.lbVideo.value = embedUrl(form.elements.lbVideo.value);
   });
 
   form.elements.thumbSrc.addEventListener('input', function(){
