@@ -1,6 +1,10 @@
 (function(){
   'use strict';
 
+  var C = window.AdminCommon;
+  var esc = C.esc, api = C.api, json = C.json, clone = C.clone, setStatus = C.setStatus;
+  var EYE_ON = C.EYE_ON, EYE_OFF = C.EYE_OFF;
+
   var cards = [];
   var saved = [];          // the cards as they are in git, to diff against
   var baseHead = null;     // commit the page was loaded at; the server refuses a publish from a stale one
@@ -8,34 +12,11 @@
   var icons = [];
   var dragFrom = null;
   var show = 'all';
-  var lastCheck = 0;
 
   var listEl = document.getElementById('card-list');
-  var statusEl = document.getElementById('status');
   var overlay = document.getElementById('overlay');
   var panel = document.getElementById('edit-panel');
   var form = document.getElementById('edit-form');
-  var bannerEl = document.getElementById('banner');
-
-  var EYE_ON = '<svg viewBox="0 0 24 24"><path d="M2 12s3.6-7 10-7 10 7 10 7-3.6 7-10 7S2 12 2 12z" fill="none" stroke="currentColor" stroke-width="1.8"/><circle cx="12" cy="12" r="3" fill="none" stroke="currentColor" stroke-width="1.8"/></svg>';
-  var EYE_OFF = '<svg viewBox="0 0 24 24"><path d="M3 3l18 18M10.6 5.1A10 10 0 0112 5c6.4 0 10 7 10 7a17 17 0 01-3.2 4.1M6.6 6.6C3.9 8.4 2 12 2 12s3.6 7 10 7a9.6 9.6 0 004.4-1.1" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>';
-
-  function setStatus(text, cls){
-    statusEl.textContent = text;
-    statusEl.className = 'status' + (cls ? ' ' + cls : '');
-  }
-  function esc(s){ return String(s == null ? '' : s).replace(/[&<>"]/g, function(c){ return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]; }); }
-
-  function api(url, opts){
-    return fetch(url, opts).then(function(r){
-      return r.json().then(function(data){
-        if (!r.ok){ var e = new Error(data.error || ('HTTP ' + r.status)); e.data = data; throw e; }
-        return data;
-      });
-    });
-  }
-  function json(method, body){ return { method: method, headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(body) }; }
-  function clone(x){ return JSON.parse(JSON.stringify(x)); }
 
   // ---------- what changed since the last publish ----------
   function diff(){
@@ -64,70 +45,13 @@
     el.hidden = !n; el.textContent = n;
   }
 
-  // ---------- repository state ----------
-  var repo = null;
-  function banner(kind, html, action, onAction){
-    if (!kind){ bannerEl.hidden = true; bannerEl.innerHTML = ''; return; }
-    bannerEl.className = 'banner ' + kind;
-    bannerEl.innerHTML = '<div>' + html + '</div>' + (action ? '<button class="btn" id="banner-act">' + esc(action) + '</button>' : '');
-    bannerEl.hidden = false;
-    if (action) document.getElementById('banner-act').onclick = onAction;
-  }
-  function renderRepo(s, pulled){
-    repo = s;
-    var pill = document.getElementById('repo'), txt = document.getElementById('repo-text');
-    var state = 'ok', label = 'main · ' + s.head + ' · up to date';
-    banner(null);
-    if (s.problem === 'branch' || s.branch !== 'main'){
-      state = 'bad'; label = 'on branch ' + s.branch;
-      banner('bad', '<b>This copy is on branch “' + esc(s.branch) + '”, not main.</b> Publishing is off until it is back on main.');
-    } else if (!s.emailOk){
-      state = 'bad'; label = 'main · ' + s.head + ' · commit email';
-      banner('bad', '<b>This copy would commit as “' + esc(s.email || 'no email') + '”.</b> GitHub refuses pushes that expose a private address, so publishing is blocked. In the repo folder run <code>git config user.email 33331553+martinposta@users.noreply.github.com</code> and reload.');
-    } else if (s.problem === 'diverged' || (s.ahead && s.behind)){
-      state = 'bad'; label = 'main · ' + s.head + ' · diverged';
-      banner('bad', '<b>This copy and GitHub both have commits the other lacks.</b> That needs sorting out in git by hand; publishing would be refused.');
-    } else if (s.problem === 'pull'){
-      state = 'bad'; label = 'main · ' + s.head + ' · behind';
-      banner('bad', '<b>GitHub has ' + s.behind + ' newer commit(s), but they could not be pulled</b> (probably files changed here that the pull would overwrite).');
-    } else if (s.behind){
-      state = 'bad'; label = 'main · ' + s.head + ' · GitHub is ahead';
-      banner('bad', '<b>main on GitHub moved (' + esc(s.remoteHead) + ', ' + esc(s.remoteWhen) + ').</b> Publishing from here would be refused. Reload to get the newer version' +
-        (diff().length ? '; your unsaved edits here are:<ul>' + diff().map(function(c){ return '<li>' + esc(c.t) + '</li>'; }).join('') + '</ul>and will have to be made again.' : '.'),
-        'Load newer version', function(){ load(); });
-    } else if (s.ahead){
-      state = 'warn'; label = 'main · ' + s.head + ' · ' + s.ahead + ' not pushed';
-      banner('warn', '<b>' + s.ahead + ' commit(s) here are not on GitHub yet</b> (a push failed earlier). Other machines will not see them until they are pushed.', 'Push now', retryPush);
-    } else if (s.dirty && s.dirty.length){
-      state = 'warn'; label = 'main · ' + s.head + ' · ' + s.dirty.length + ' file(s) not in git';
-      banner('warn', '<b>' + s.dirty.length + ' file(s) on disk are not in git:</b><ul>' + s.dirty.slice(0, 8).map(function(f){ return '<li>' + esc(f) + '</li>'; }).join('') + '</ul>They will go into the next publish.');
-    } else if (pulled && pulled.length){
-      state = 'info';
-      banner('info', '<b>Pulled ' + pulled.length + ' commit(s) from GitHub</b> when the admin opened:<ul>' + pulled.slice(0, 6).map(function(l){ return '<li>' + esc(l) + '</li>'; }).join('') + '</ul>You are editing the current version.');
-    }
-    if (s.offline){ state = state === 'ok' ? 'warn' : state; label += ' · offline'; }
-    pill.dataset.s = state;
-    txt.textContent = label;
-    pill.title = s.offline ? 'Could not reach GitHub: ' + (s.fetchError || '') : 'State of this copy against GitHub';
-  }
-  function retryPush(){
-    setStatus('Pushing…');
-    api('/api/push', { method: 'POST' }).then(function(res){ renderRepo(res.repo); setStatus('Pushed', 'ok'); })
-      .catch(function(e){ setStatus('Push failed: ' + e.message, 'err'); });
-  }
-  // Re-check when the tab comes back into focus (a copy left open for days
-  // on the server would otherwise never learn that another machine published).
-  window.addEventListener('focus', function(){
-    if (Date.now() - lastCheck < 60000) return;
-    lastCheck = Date.now();
-    api('/api/repo').then(function(s){ renderRepo(s); }).catch(function(){});
-  });
-
   // ---------- loading ----------
+  C.hooks.unsaved = diff;
+  C.hooks.reload = load;
+  var renderRepo = C.renderRepo;
   function load(){
     setStatus('Checking GitHub…');
-    api('/api/sync', { method: 'POST' }).then(function(s){
-      lastCheck = Date.now();
+    C.sync().then(function(s){
       return Promise.all([ api('/api/projects'), api('/api/icons') ]).then(function(res){
         cards = res[0].cards; saved = clone(cards); baseHead = res[0].head;
         icons = res[1];
@@ -272,82 +196,19 @@
     r.addEventListener('change', function(){ showRadioGroup('interaction', r.value); });
   });
 
-  // Thumbnails show as a square of ~280 css px (560 on a 2x screen), so the
-  // shorter side is scaled down to THUMB_SHORT before upload. The canvas draws
-  // at the target size in one step; the browser's own resampling is fine for
-  // a downscale of this ratio. Never upscales.
-  var THUMB_SHORT = 600, THUMB_QUALITY = 0.82;
-  function kb(n){ return Math.round(n / 1024) + ' KB'; }
-  function shrink(file){
-    return new Promise(function(resolve, reject){
-      if (!/^image\/(jpeg|png|webp)$/.test(file.type)) return reject(new Error('Use a JPG, PNG or WebP image.'));
-      var url = URL.createObjectURL(file), img = new Image();
-      img.onload = function(){
-        URL.revokeObjectURL(url);
-        var scale = Math.min(1, THUMB_SHORT / Math.min(img.naturalWidth, img.naturalHeight));
-        var w = Math.round(img.naturalWidth * scale), h = Math.round(img.naturalHeight * scale);
-        var c = document.createElement('canvas'); c.width = w; c.height = h;
-        c.getContext('2d').drawImage(img, 0, 0, w, h);
-        // Safari cannot encode WebP and hands back a PNG instead: fall back to JPEG.
-        c.toBlob(function(blob){
-          if (blob && blob.type === 'image/webp') return resolve({ blob: blob, ext: 'webp', w: w, h: h, from: img.naturalWidth + ' × ' + img.naturalHeight });
-          c.toBlob(function(jpg){ resolve({ blob: jpg, ext: 'jpg', w: w, h: h, from: img.naturalWidth + ' × ' + img.naturalHeight }); }, 'image/jpeg', 0.85);
-        }, 'image/webp', THUMB_QUALITY);
-      };
-      img.onerror = function(){ URL.revokeObjectURL(url); reject(new Error('The file could not be read as an image.')); };
-      img.src = url;
-    });
-  }
-
-  function upload(file, overwrite, prepared){
-    var ready = prepared ? Promise.resolve(prepared) : shrink(file);
-    setStatus('Resizing…');
-    ready.then(function(p){
-      var name = file.name.replace(/\.[^.]+$/, '') + '.' + p.ext;
-      var reader = new FileReader();
-      reader.onload = function(){
-        setStatus('Uploading thumbnail…');
-        api('/api/upload-thumb', json('POST', { filename: name, dataBase64: reader.result, overwrite: !!overwrite }))
-          .then(function(res){
-            form.elements.thumbSrc.value = res.path;
-            document.getElementById('thumb-preview').src = res.path + '?t=' + Date.now();
-            setStatus('Uploaded ' + p.from + ', ' + kb(file.size) + ' → ' + p.w + ' × ' + p.h + ' ' + p.ext.toUpperCase() + ', ' + kb(p.blob.size), 'ok');
-          }).catch(function(e){
-            if (e.data && e.data.code === 'exists'){
-              if (confirm(e.message + '.\n\nReplace it? Every card using that file will show the new image.')) upload(file, true, p);
-              else setStatus('Upload cancelled. Rename the file and try again.', 'err');
-              return;
-            }
-            setStatus('Upload failed: ' + e.message, 'err');
-          });
-      };
-      reader.readAsDataURL(p.blob);
-    }).catch(function(e){ setStatus('Upload failed: ' + e.message, 'err'); });
-  }
+  // Thumbnails show as a square of ~280 css px (560 on a 2x screen): the
+  // shorter side is scaled to 600 px before upload.
   document.getElementById('thumb-upload').addEventListener('change', function(ev){
-    if (ev.target.files[0]) upload(ev.target.files[0], false);
+    var file = ev.target.files[0];
     ev.target.value = '';   // picking the same file again must fire change again
+    if (!file) return;
+    C.upload(file, 'thumbs', { short: 600 }).then(function(path){
+      form.elements.thumbSrc.value = path;
+      document.getElementById('thumb-preview').src = path + '?t=' + Date.now();
+    }).catch(function(){});
   });
-
-  // Accepts whatever gets pasted — a vimeo.com page, a youtu.be share link —
-  // and stores the player URL the lightbox iframe needs. Unknown links are
-  // left as typed; the server then refuses them with a readable message.
-  function embedUrl(u){
-    u = (u || '').trim();
-    // already a player URL (possibly with its own ?title=0 options): keep it
-    if (/^https:\/\/(player\.vimeo\.com\/video\/\d|www\.youtube(-nocookie)?\.com\/embed\/)/.test(u)) return u;
-    var m = /vimeo\.com\/(?:video\/)?(\d+)(?:\/([0-9a-f]+))?/.exec(u);
-    if (m){
-      var h = /[?&]h=([0-9a-f]+)/.exec(u);
-      var hash = m[2] || (h && h[1]);
-      return 'https://player.vimeo.com/video/' + m[1] + (hash ? '?h=' + hash : '');
-    }
-    m = /(?:youtu\.be\/|youtube(?:-nocookie)?\.com\/(?:watch\?(?:.*&)?v=|embed\/|shorts\/))([\w-]{11})/.exec(u);
-    if (m) return 'https://www.youtube-nocookie.com/embed/' + m[1];
-    return u;
-  }
   form.elements.lbVideo.addEventListener('change', function(){
-    form.elements.lbVideo.value = embedUrl(form.elements.lbVideo.value);
+    form.elements.lbVideo.value = C.embedUrl(form.elements.lbVideo.value);
   });
 
   form.elements.thumbSrc.addEventListener('input', function(){
@@ -433,6 +294,7 @@
 
   document.getElementById('btn-save').addEventListener('click', function(){
     var ch = diff();
+    var repo = C.repo();
     var extra = repo && repo.dirty && repo.dirty.length ? [{ k: 'add', t: repo.dirty.length + ' file(s) already on disk' }] : [];
     if (!ch.length && !extra.length && !(repo && repo.ahead)){ setStatus('Nothing to publish: everything matches GitHub.', 'ok'); return; }
     document.getElementById('pub-changes').innerHTML = ch.concat(extra).map(function(c){

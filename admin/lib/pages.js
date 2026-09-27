@@ -64,7 +64,11 @@ function renderBlock(b, paper, i) {
     case 'heading':
       return `  <div class="section-head block-head"${at}><h2>${esc(b.text)}</h2></div>`;
     case 'video': {
-      const frame = `<iframe src="${esc(b.url)}" allow="autoplay; fullscreen" allowfullscreen loading="lazy"></iframe>`;
+      // no link yet (only possible in the preview, publishing refuses it): an
+      // empty frame, not <iframe src="">, which loads the page into itself
+      const frame = VIDEO_EMBED.test(b.url || '')
+        ? `<iframe src="${esc(b.url)}" allow="autoplay; fullscreen" allowfullscreen loading="lazy"></iframe>`
+        : '';
       return screen(paper(b.paper), b.tilt === 'flip', frame, b.caption).replace('<div class="screen', `<div${at} class="screen`);
     }
     case 'photos': {

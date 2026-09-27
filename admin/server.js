@@ -26,12 +26,21 @@ const path = require('path');
 const crypto = require('crypto');
 const { renderGrid, findGridBlock } = require('./lib/cards');
 const { makeGit, GitError } = require('./lib/git');
+const { renderPage, validatePage } = require('./lib/pages');
 
 const REPO = path.join(__dirname, '..');
 const ROOT = path.join(REPO, 'site');             // what GitHub Pages publishes
 const DATA_FILE = path.join(REPO, 'content', 'projects.json');
 const INDEX_FILE = path.join(ROOT, 'index.html');
 const THUMBS_DIR = path.join(ROOT, 'images', 'thumbs');
+const PAGES_DIR = path.join(REPO, 'content', 'pages');      // project pages, one JSON each
+const PROJECTS_DIR = path.join(ROOT, 'projects');           // …generated into these HTML files
+// Upload targets and what each accepts. Doodles may be animated (svg/gif/webm).
+const UPLOADS = {
+  thumbs: { dir: THUMBS_DIR, types: /\.(jpe?g|png|webp)$/i },
+  projects: { dir: path.join(ROOT, 'images', 'projects'), types: /\.(jpe?g|png|webp)$/i },
+  doodles: { dir: path.join(ROOT, 'images', 'doodles'), types: /\.(svg|png|webp|gif|webm|mp4)$/i }
+};
 const PUBLIC_DIR = path.join(__dirname, 'public');
 const PORT = Number(process.env.PORT) || 4173;
 const HOST = process.env.HOST || '127.0.0.1';
@@ -45,7 +54,6 @@ const CATEGORIES = ['feature', 'vfx', 'games', 'shorts'];   // must match the ta
 const KINDS = ['link', 'page', 'lightbox'];
 // What the lightbox iframe can play. The admin turns pasted page links into these.
 const VIDEO_EMBED = /^https:\/\/(player\.vimeo\.com\/video\/\d+|www\.youtube(-nocookie)?\.com\/embed\/[\w-]{11})([?#].*)?$/;
-const THUMB_TYPES = /\.(jpe?g|png|webp)$/i;
 
 // Site asset paths (real site files) that the preview page needs to load
 // with the exact same root-relative URLs the live site uses.
@@ -114,7 +122,10 @@ function validateCards(cards) {
     if (!KINDS.includes(it.type)) return `${name}: click behaviour must be ${KINDS.join(', ')}`;
     if (it.type === 'page') {
       const p = String(it.href || '');
-      if (!/^\/projects\/[\w-]+\.html$/.test(p) || !fs.existsSync(path.join(ROOT, p))) return `${name}: project page ${p || '(empty)'} does not exist`;
+      const slug = (/^\/projects\/([\w-]+)\.html$/.exec(p) || [])[1];
+      const page = slug && loadPage(slug);
+      if (!page) return `${name}: project page ${p || '(empty)'} does not exist`;
+      if (c.visible !== false && page.visible === false) return `${name}: it is live but its page “${page.title}” is a draft. Make the card a draft too, or publish the page first.`;
     }
     if (it.type === 'link' && !/^https?:\/\//.test(it.href || '')) return `${name}: the link must start with http:// or https://`;
     if (it.type === 'lightbox' && it.video && !VIDEO_EMBED.test(it.video)) return `${name}: the video must be a Vimeo or YouTube link (got ${it.video})`;
@@ -138,6 +149,52 @@ function buildUpdatedHtml(cards, opts) {
   return html.slice(0, start) + newGrid + html.slice(end);
 }
 
+function loadPage(slug) {
+  const f = path.join(PAGES_DIR, slug + '.json');
+  return fs.existsSync(f) ? JSON.parse(fs.readFileSync(f, 'utf8')) : null;
+}
+function loadPages() {
+  if (!fs.existsSync(PAGES_DIR)) return [];
+  return fs.readdirSync(PAGES_DIR).filter((f) => f.endsWith('.json')).sort()
+    .map((f) => JSON.parse(fs.readFileSync(path.join(PAGES_DIR, f), 'utf8')));
+}
+function listFiles(dir) {
+  return fs.existsSync(dir) ? fs.readdirSync(dir).filter((f) => !f.startsWith('.')).sort() : [];
+}
+
+// Checks a whole publish of pages against each other and against the gallery.
+function validatePagesChange(changed, deleted) {
+  const cards = loadCards();
+  const linking = (slug) => cards.filter((c) => c.visible !== false && c.interaction && c.interaction.href === '/projects/' + slug + '.html').map((c) => c.title);
+  const seen = new Set();
+  for (const p of changed) {
+    const err = validatePage(p);
+    if (err) return err;
+    if (seen.has(p.slug)) return `Two pages use the address ${p.slug}`;
+    seen.add(p.slug);
+    if (p.visible === false && linking(p.slug).length) return `“${p.title}” cannot become a draft: the live card ${linking(p.slug).join(', ')} opens it. Make the card a draft first.`;
+  }
+  for (const slug of deleted) {
+    if (linking(slug).length) return `The page ${slug} cannot be deleted: the live card ${linking(slug).join(', ')} opens it.`;
+  }
+  return null;
+}
+
+// A draft page keeps its JSON but has no HTML, so it cannot be opened on the site.
+function writePages(changed, deleted) {
+  fs.mkdirSync(PAGES_DIR, { recursive: true });
+  for (const p of changed) {
+    fs.writeFileSync(path.join(PAGES_DIR, p.slug + '.json'), JSON.stringify(p, null, 2) + '\n', 'utf8');
+    const html = path.join(PROJECTS_DIR, p.slug + '.html');
+    if (p.visible === false) fs.rmSync(html, { force: true });
+    else fs.writeFileSync(html, renderPage(p), 'utf8');
+  }
+  for (const slug of deleted) {
+    fs.rmSync(path.join(PAGES_DIR, slug + '.json'), { force: true });
+    fs.rmSync(path.join(PROJECTS_DIR, slug + '.html'), { force: true });
+  }
+}
+
 function writeFiles(cards) {
   const updated = buildUpdatedHtml(cards);
   fs.mkdirSync(path.dirname(DATA_FILE), { recursive: true });
@@ -158,7 +215,7 @@ function buildPreviewHtml(cards) {
   return html.replace(/<body([^>]*)>/, '<body$1>' + banner);
 }
 
-const MIME = { '.html': 'text/html', '.css': 'text/css', '.js': 'application/javascript', '.json': 'application/json', '.png': 'image/png', '.jpg': 'image/jpeg', '.jpeg': 'image/jpeg', '.webp': 'image/webp', '.svg': 'image/svg+xml', '.pdf': 'application/pdf' };
+const MIME = { '.html': 'text/html', '.css': 'text/css', '.js': 'application/javascript', '.json': 'application/json', '.png': 'image/png', '.jpg': 'image/jpeg', '.jpeg': 'image/jpeg', '.webp': 'image/webp', '.svg': 'image/svg+xml', '.gif': 'image/gif', '.webm': 'video/webm', '.mp4': 'video/mp4', '.pdf': 'application/pdf' };
 
 function serveFrom(baseDir, urlPath, res) {
   const full = path.join(baseDir, decodeURIComponent(urlPath));
@@ -205,26 +262,59 @@ const server = http.createServer((req, res) => {
       });
     }
 
+    if (url === '/api/pages' && req.method === 'GET') {
+      return send(res, 200, {
+        pages: loadPages(),
+        head: git.state().head,
+        cards: loadCards().map((c) => ({ title: c.title, visible: c.visible !== false, href: c.interaction && c.interaction.href })),
+        doodles: listFiles(UPLOADS.doodles.dir).map((f) => '/images/doodles/' + f)
+      });
+    }
+
+    if (url === '/api/pages' && req.method === 'PUT') {
+      return readJSON(res, req, ({ pages, deleted, message, head }) => {
+        pages = Array.isArray(pages) ? pages : [];
+        deleted = Array.isArray(deleted) ? deleted.filter((s) => /^[a-z0-9-]+$/.test(s)) : [];
+        const problem = validatePagesChange(pages, deleted);
+        if (problem) return send(res, 400, { error: problem });
+        const result = git.publish({ message, expectHead: head, write: () => writePages(pages, deleted) });
+        send(res, 200, Object.assign({ ok: true }, result, { repo: git.state() }));
+      });
+    }
+
+    if (url === '/api/pages/preview' && req.method === 'POST') {
+      return readJSON(res, req, (page) => {
+        cleanupPreviews();
+        const token = crypto.randomBytes(8).toString('hex');
+        previews.set(token, { html: renderPage(page, { preview: true }), createdAt: Date.now() });
+        send(res, 200, { ok: true, url: '/preview/' + token });
+      });
+    }
+
     if (url === '/api/push' && req.method === 'POST') {
       const err = git.push();
       return send(res, err ? 500 : 200, err ? { error: err } : { ok: true, repo: git.state() });
     }
 
-    if (url === '/api/upload-thumb' && req.method === 'POST') {
-      return readJSON(res, req, ({ filename, dataBase64, overwrite }) => {
+    if ((url === '/api/upload' || url === '/api/upload-thumb') && req.method === 'POST') {
+      return readJSON(res, req, ({ filename, dataBase64, overwrite, target }) => {
         if (!filename || !dataBase64) return send(res, 400, { error: 'missing filename or dataBase64' });
+        const up = UPLOADS[target || 'thumbs'];
+        if (!up) return send(res, 400, { error: 'unknown upload target' });
         const safeName = filename.replace(/[^a-zA-Z0-9_.-]/g, '_');
-        if (!THUMB_TYPES.test(safeName)) return send(res, 400, { error: 'Thumbnails must be JPG, PNG or WebP.' });
-        const dest = path.join(THUMBS_DIR, safeName);
+        if (!up.types.test(safeName)) return send(res, 400, { error: `${target || 'thumbs'} accepts ${String(up.types).match(/\((.*)\)/)[1].replace(/\|/g, ', ').replace('jpe?g', 'jpg')} files` });
+        const dest = path.join(up.dir, safeName);
+        const webPath = '/' + path.relative(ROOT, dest).split(path.sep).join('/');
         // An upload with the name of an existing file used to replace it
         // silently — and with it the thumbnail of whichever card used it.
         if (fs.existsSync(dest) && !overwrite) {
-          const users = loadCards().filter((c) => c.thumb && c.thumb.src === '/images/thumbs/' + safeName).map((c) => c.title);
+          const users = loadCards().filter((c) => c.thumb && c.thumb.src === webPath).map((c) => c.title)
+            .concat(loadPages().filter((p) => JSON.stringify(p.blocks).includes('"' + webPath + '"')).map((p) => 'page ' + p.title));
           return send(res, 409, { error: `${safeName} already exists` + (users.length ? ` (used by ${users.join(', ')})` : ''), code: 'exists' });
         }
-        fs.mkdirSync(THUMBS_DIR, { recursive: true });
+        fs.mkdirSync(up.dir, { recursive: true });
         fs.writeFileSync(dest, Buffer.from(dataBase64.replace(/^data:[^,]+,/, ''), 'base64'));
-        send(res, 200, { ok: true, path: '/images/thumbs/' + safeName });
+        send(res, 200, { ok: true, path: webPath });
       });
     }
 
