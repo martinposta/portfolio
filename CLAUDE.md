@@ -210,3 +210,9 @@ three became empty and were dropped. What that did and did not do:
 - Compared with deleting and recreating the repo (done for the photo
   gallery project): filter-repo keeps settings and URLs, but only the
   support ticket removes the old commits from GitHub.
+- **If GitHub Support declines**, the agreed fallback is the photo-gallery
+  route: delete the repo and recreate it from the clean local history, then
+  redo Pages (GitHub Actions source, custom domain martinposta.com), the
+  `github-pages` environment rule (deploy from `main` only) and the default
+  branch.
+- http→https: Cloudflare "Always Use HTTPS" is on (2026-09-28, verified 301).
