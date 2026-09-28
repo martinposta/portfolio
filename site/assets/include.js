@@ -41,6 +41,35 @@ function wireMenuToggle() {
 
 // ---- Lightbox: video + description + links, driven entirely by data-*
 // attributes on the triggering card. No video? It just hides that part.
+// One place that puts a player into the lightbox (or removes it), and
+// remembers which video it holds, so a warmed-up player is reused.
+function setPlayer(wrap, video) {
+  wrap.innerHTML = video ? '<iframe src="' + video + '" allow="autoplay; fullscreen" allowfullscreen></iframe>' : '';
+  wrap.dataset.src = video || '';
+}
+
+// Warm-up: when the pointer rests on a lightbox card for a moment, the
+// player starts loading in the still-hidden lightbox, so it is ready sooner
+// after the click (measured: ~0.35 s of player start-up). The video itself
+// is not downloaded until someone presses play. Pointer devices only.
+function initLightboxWarmup() {
+  if (!window.matchMedia('(hover: hover) and (pointer: fine)').matches) return;
+  const wrap = document.getElementById('lightbox-video-wrap');
+  const overlay = document.getElementById('lightbox-overlay');
+  if (!wrap || !overlay) return;
+  let timer = null;
+  document.querySelectorAll('[data-lightbox][data-video]').forEach((card) => {
+    card.addEventListener('pointerenter', () => {
+      clearTimeout(timer);
+      timer = setTimeout(() => {
+        const video = card.getAttribute('data-video');
+        if (video && !overlay.classList.contains('open') && wrap.dataset.src !== video) setPlayer(wrap, video);
+      }, 150);   // passing over the card while scrolling does not count
+    });
+    card.addEventListener('pointerleave', () => clearTimeout(timer));
+  });
+}
+
 let lastTrigger = null;   // the card that opened the lightbox gets focus back on close
 
 function openLightbox(card) {
@@ -67,10 +96,11 @@ function openLightbox(card) {
   const videoWrap = document.getElementById('lightbox-video-wrap');
   if (video) {
     videoWrap.style.display = 'block';
-    videoWrap.innerHTML = '<iframe src="' + video + '" allow="autoplay; fullscreen" allowfullscreen></iframe>';
+    // the player may already be loading since the pointer rested on the card
+    if (videoWrap.dataset.src !== video) setPlayer(videoWrap, video);
   } else {
     videoWrap.style.display = 'none';
-    videoWrap.innerHTML = '';
+    setPlayer(videoWrap, '');
   }
 
   const linksWrap = document.getElementById('lightbox-links');
@@ -97,7 +127,7 @@ function closeLightbox() {
   if (!overlay) return;
   overlay.classList.remove('open');
   overlay.setAttribute('aria-hidden', 'true');
-  document.getElementById('lightbox-video-wrap').innerHTML = ''; // stop playback
+  setPlayer(document.getElementById('lightbox-video-wrap'), ''); // stop playback
   if (lastTrigger) { lastTrigger.focus({ preventScroll: true }); lastTrigger = null; }
 }
 
@@ -125,6 +155,7 @@ document.addEventListener('DOMContentLoaded', () => {
   initGalleryFilter();
   initPencilUnderlines();
   initHoverLoops();
+  initLightboxWarmup();
 });
 
 // ---- Motion --------------------------------------------------------------

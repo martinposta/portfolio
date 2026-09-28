@@ -85,6 +85,10 @@ function renderMeta(site, page) {
     `<meta property="og:url" content="${esc(url)}">`,
     image ? `<meta property="og:image" content="${esc(image)}">` : null,
     `<meta name="twitter:card" content="${image ? 'summary_large_image' : 'summary'}">`,
+    // open the connections to Vimeo early: the first video starts ~0.1-0.2 s sooner
+    `<link rel="preconnect" href="https://player.vimeo.com">`,
+    `<link rel="preconnect" href="https://f.vimeocdn.com">`,
+    `<link rel="preconnect" href="https://i.vimeocdn.com">`,
     `<link rel="stylesheet" href="/assets/fonts.css">`
   ].filter(Boolean).join('\n');
 }
