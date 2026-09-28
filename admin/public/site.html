@@ -3,14 +3,14 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Project pages — Portfolio Admin</title>
+<title>Header &amp; footer — Portfolio Admin</title>
 <link rel="stylesheet" href="/admin/admin.css">
 </head>
-<body class="pages-app">
+<body class="pages-app site-app">
 
 <header class="topbar">
   <h1>Martin Pošta — Portfolio Admin</h1>
-  <nav class="apptabs"><a href="/admin/">Gallery</a><a href="/admin/pages.html" aria-current="page">Project pages</a><a href="/admin/site.html">Header &amp; footer</a></nav>
+  <nav class="apptabs"><a href="/admin/">Gallery</a><a href="/admin/pages.html">Project pages</a><a href="/admin/site.html" aria-current="page">Header &amp; footer</a></nav>
   <div class="topbar-actions">
     <span id="status" class="status"></span>
     <label class="branch-pick" title="Which version of the site this admin works on">Branch
@@ -22,13 +22,13 @@
 </header>
 
 <div id="banner" class="banner" hidden></div>
-<div id="pagebar" class="pagebar"></div>
+
 
 <div class="work">
-  <section id="editor" class="pg-editor" aria-label="Edit page"></section>
+  <section id="editor" class="pg-editor" aria-label="Edit header and footer"></section>
   <section class="pv-col" aria-label="Preview">
     <div class="pv-bar">
-      <span id="pv-url" class="pv-url"></span>
+      <span class="pv-url">Homepage with your unsaved header, footer and sharing settings</span><button class="btn" data-jump="top">Header</button><button class="btn" data-jump="bottom">Footer</button>
       <div class="seg" role="group" aria-label="Preview width">
         <button data-w="desk" aria-pressed="true">Desktop</button>
         <button data-w="phone" aria-pressed="false">Phone</button>
@@ -55,10 +55,10 @@
   </div>
 </div>
 
-<input type="file" id="file-photos" accept="image/jpeg,image/png,image/webp" multiple hidden>
-<input type="file" id="file-doodle" accept=".svg,.png,.webp,.gif,.webm,.mp4" hidden>
+<input type="file" id="file-pdf" accept="application/pdf" hidden>
+<input type="file" id="file-share" accept="image/jpeg,image/png,image/webp" hidden>
 
 <script src="/admin/common.js"></script>
-<script src="/admin/pages.js"></script>
+<script src="/admin/site.js"></script>
 </body>
 </html>

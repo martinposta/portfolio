@@ -1,29 +1,8 @@
 // include.js
-// Loads shared header/footer into any page that has the placeholders below,
-// wires up the mobile menu, the video lightbox, and the obfuscated email.
-//
-// Usage on any page:
-//   <div data-include="/partials/header.html"></div>
-//   ...page content...
-//   <div data-include="/partials/footer.html"></div>
-//
-// NOTE: fetch() needs http(s), not file://. Test locally with:
-//   python -m http.server   (then open http://localhost:8000)
-
-async function includeHTML(el) {
-  const url = el.getAttribute('data-include');
-  try {
-    const res = await fetch(url);
-    if (!res.ok) throw new Error(res.status);
-    el.outerHTML = await res.text();
-    // Elements inserted via outerHTML don't run their own <script> tags,
-    // so anything the partial needs done in JS has to happen from here.
-    revealEmail();
-    wireMenuToggle();
-  } catch (err) {
-    console.error('include.js: failed to load', url, err);
-  }
-}
+// The header and footer are written into every page by the admin (from
+// content/site.json); this script only brings them to life: the contact
+// email, the mobile menu, the lightbox and the motion.
+// (It used to fetch the header and footer from /partials after load.)
 
 // Builds the contact email address at runtime instead of printing it as
 // plain text in the HTML source. Not unbreakable — a scraper running a full
@@ -34,9 +13,10 @@ function revealEmail() {
   const slot = document.getElementById('email-slot');
   if (!slot || slot.dataset.filled) return;
   slot.dataset.filled = '1';
-  const user = ['anim', 'ation'].join('');
-  const domain = ['martin', 'posta'].join('') + '.' + 'com';
-  const address = user + '@' + domain;
+  // the footer carries the address reversed, so the page source holds no
+  // recognisable email; the admin writes it from content/site.json
+  const address = (slot.dataset.e || '').split('').reverse().join('');
+  if (!address) return;
   const link = document.createElement('a');
   link.href = 'mailto:' + address;
   link.textContent = address;
@@ -50,9 +30,12 @@ function wireMenuToggle() {
   const nav = document.querySelector('nav');
   if (!btn || !nav || btn.dataset.wired) return;
   btn.dataset.wired = '1';
-  btn.addEventListener('click', () => nav.classList.toggle('open'));
+  btn.addEventListener('click', () => {
+    const open = nav.classList.toggle('open');
+    btn.setAttribute('aria-expanded', String(open));
+  });
   nav.querySelectorAll('a').forEach((a) =>
-    a.addEventListener('click', () => nav.classList.remove('open'))
+    a.addEventListener('click', () => { nav.classList.remove('open'); btn.setAttribute('aria-expanded', 'false'); })
   );
 }
 
@@ -137,8 +120,8 @@ document.addEventListener('keydown', (e) => {
 });
 
 document.addEventListener('DOMContentLoaded', () => {
-  document.querySelectorAll('[data-include]').forEach(includeHTML);
-  wireMenuToggle(); // in case a page has a static (non-included) header
+  revealEmail();
+  wireMenuToggle();
   initGalleryFilter();
   initPencilUnderlines();
   initHoverLoops();

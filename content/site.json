@@ -1,0 +1,39 @@
+{
+  "header": {
+    "resume": {
+      "label": "resume",
+      "href": "/posta_resume.pdf"
+    },
+    "links": [
+      {
+        "label": "willownook.studio",
+        "emoji": "🕹️",
+        "href": "https://www.willownook.studio"
+      }
+    ]
+  },
+  "footer": {
+    "email": "animation@martinposta.com",
+    "links": [
+      {
+        "label": "IMDb",
+        "href": "https://www.imdb.com/name/nm9477393/"
+      },
+      {
+        "label": "LinkedIn",
+        "href": "https://www.linkedin.com/in/postamartin/"
+      },
+      {
+        "label": "Vimeo",
+        "href": "https://vimeo.com/martinposta"
+      }
+    ],
+    "owner": "Martin Pošta"
+  },
+  "meta": {
+    "url": "https://martinposta.com",
+    "title": "Martin Pošta — Character Animator",
+    "description": "Martin Pošta, character animator for feature films, VFX and games. Showreel, film and game credits, short films.",
+    "image": ""
+  }
+}

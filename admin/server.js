@@ -27,6 +27,8 @@ const crypto = require('crypto');
 const { renderGrid, findGridBlock } = require('./lib/cards');
 const { makeGit, GitError } = require('./lib/git');
 const { renderPage, validatePage } = require('./lib/pages');
+const { applyChrome, validateSite } = require('./lib/chrome');
+const { esc } = require('./lib/esc');
 
 const REPO = path.join(__dirname, '..');
 const ROOT = path.join(REPO, 'site');             // what GitHub Pages publishes
@@ -34,13 +36,16 @@ const DATA_FILE = path.join(REPO, 'content', 'projects.json');
 const INDEX_FILE = path.join(ROOT, 'index.html');
 const THUMBS_DIR = path.join(ROOT, 'images', 'thumbs');
 const PAGES_DIR = path.join(REPO, 'content', 'pages');      // project pages, one JSON each
+const SITE_FILE = path.join(REPO, 'content', 'site.json');  // header, footer, sharing tags
 const PROJECTS_DIR = path.join(ROOT, 'projects');           // …generated into these HTML files
 // Upload targets and what each accepts. Doodles may be animated (svg/gif/webm).
 const UPLOADS = {
   thumbs: { dir: THUMBS_DIR, types: /\.(jpe?g|png|webp)$/i },
   projects: { dir: path.join(ROOT, 'images', 'projects'), types: /\.(jpe?g|png|webp)$/i },
   doodles: { dir: path.join(ROOT, 'images', 'doodles'), types: /\.(svg|png|webp|gif|webm|mp4)$/i },
-  loops: { dir: path.join(ROOT, 'images', 'loops'), types: /\.(webm|mp4)$/i }     // hover clips on gallery cards
+  loops: { dir: path.join(ROOT, 'images', 'loops'), types: /\.(webm|mp4)$/i },    // hover clips on gallery cards
+  files: { dir: path.join(ROOT, 'files'), types: /\.pdf$/i },                      // resume and other documents
+  share: { dir: path.join(ROOT, 'images', 'share'), types: /\.(jpe?g|png|webp)$/i } // link-preview images
 };
 const PUBLIC_DIR = path.join(__dirname, 'public');
 const PORT = Number(process.env.PORT) || 4173;
@@ -152,6 +157,25 @@ function buildUpdatedHtml(cards, opts) {
   return html.slice(0, start) + newGrid + html.slice(end);
 }
 
+function loadSite() { return JSON.parse(fs.readFileSync(SITE_FILE, 'utf8')); }
+const siteFileExists = (p) => fs.existsSync(path.join(ROOT, decodeURI(p.split(/[?#]/)[0])));
+
+// The homepage keeps its hand-written body; only the marked header, footer
+// and head blocks (and the <title>) come from site.json.
+function homepageWithChrome(html, site) {
+  html = applyChrome(html, site, { title: site.meta.title, path: '/' });
+  return site.meta.title ? html.replace(/<title>[^<]*<\/title>/, '<title>' + esc(site.meta.title) + '</title>') : html;
+}
+
+// Publishing the header/footer rewrites every page that carries them.
+function writeSite(site) {
+  fs.writeFileSync(SITE_FILE, JSON.stringify(site, null, 2) + '\n', 'utf8');
+  fs.writeFileSync(INDEX_FILE, homepageWithChrome(fs.readFileSync(INDEX_FILE, 'utf8'), site), 'utf8');
+  for (const p of loadPages()) {
+    if (p.visible !== false) fs.writeFileSync(path.join(PROJECTS_DIR, p.slug + '.html'), renderPage(p, { site }), 'utf8');
+  }
+}
+
 function loadPage(slug) {
   const f = path.join(PAGES_DIR, slug + '.json');
   return fs.existsSync(f) ? JSON.parse(fs.readFileSync(f, 'utf8')) : null;
@@ -190,7 +214,7 @@ function writePages(changed, deleted) {
     fs.writeFileSync(path.join(PAGES_DIR, p.slug + '.json'), JSON.stringify(p, null, 2) + '\n', 'utf8');
     const html = path.join(PROJECTS_DIR, p.slug + '.html');
     if (p.visible === false) fs.rmSync(html, { force: true });
-    else fs.writeFileSync(html, renderPage(p), 'utf8');
+    else fs.writeFileSync(html, renderPage(p, { site: loadSite() }), 'utf8');
   }
   for (const slug of deleted) {
     fs.rmSync(path.join(PAGES_DIR, slug + '.json'), { force: true });
@@ -299,8 +323,35 @@ const server = http.createServer((req, res) => {
       return readJSON(res, req, (page) => {
         cleanupPreviews();
         const token = crypto.randomBytes(8).toString('hex');
-        previews.set(token, { html: renderPage(page, { preview: true }), createdAt: Date.now() });
+        previews.set(token, { html: renderPage(page, { preview: true, site: loadSite() }), createdAt: Date.now() });
         send(res, 200, { ok: true, url: '/preview/' + token });
+      });
+    }
+
+    if (url === '/api/site' && req.method === 'GET') {
+      const files = (dir, re) => listFiles(path.join(ROOT, dir)).filter((f) => re.test(f)).map((f) => '/' + (dir ? dir + '/' : '') + f);
+      return send(res, 200, {
+        site: loadSite(),
+        head: git.state().head,
+        documents: files('', /\.pdf$/i).concat(files('files', /\.pdf$/i))
+      });
+    }
+
+    if (url === '/api/site/preview' && req.method === 'POST') {
+      return readJSON(res, req, (site) => {
+        cleanupPreviews();
+        const token = crypto.randomBytes(8).toString('hex');
+        previews.set(token, { html: homepageWithChrome(fs.readFileSync(INDEX_FILE, 'utf8'), site), createdAt: Date.now() });
+        send(res, 200, { ok: true, url: '/preview/' + token });
+      });
+    }
+
+    if (url === '/api/site' && req.method === 'PUT') {
+      return readJSON(res, req, ({ site, message, head }) => {
+        const problem = validateSite(site, siteFileExists);
+        if (problem) return send(res, 400, { error: problem });
+        const result = git.publish({ message, expectHead: head, write: () => writeSite(site) });
+        send(res, 200, Object.assign({ ok: true }, result, { repo: git.state() }));
       });
     }
 

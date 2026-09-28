@@ -4,9 +4,16 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>LEGO — Martin Pošta</title>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Special+Elite&family=Reenie+Beanie&family=Work+Sans:wght@400;500&display=swap" rel="stylesheet">
+<!-- ADMIN:META:START -->
+<meta name="description" content="Animation tests">
+<link rel="canonical" href="https://martinposta.com/projects/lego.html">
+<meta property="og:type" content="website">
+<meta property="og:title" content="LEGO — Martin Pošta">
+<meta property="og:description" content="Animation tests">
+<meta property="og:url" content="https://martinposta.com/projects/lego.html">
+<meta name="twitter:card" content="summary">
+<link rel="stylesheet" href="/assets/fonts.css">
+<!-- ADMIN:META:END -->
 <link rel="stylesheet" href="/assets/notebook.css">
 </head>
 <body class="project-page">
@@ -15,7 +22,22 @@
 <div class="spine"></div>
 <div class="margin-rule"></div>
 
-<div data-include="/partials/header.html"></div>
+<!-- ADMIN:HEADER:START -->
+<header>
+  <div class="header-inner">
+    <div class="logo">Martin Pošta</div>
+    <button class="menu-toggle" aria-label="Toggle menu" aria-expanded="false">☰</button>
+    <nav>
+      <a href="/index.html#reel">reel</a>
+      <a href="/index.html#portfolio">portfolio</a>
+      <a href="/index.html#contact">contact</a>
+      <a href="/posta_resume.pdf" target="_blank" rel="noopener">resume</a>
+      <span class="nav-sep">|</span>
+      <a href="https://www.willownook.studio" target="_blank" rel="noopener">🕹️ willownook.studio</a>
+    </nav>
+  </div>
+</header>
+<!-- ADMIN:HEADER:END -->
 
 <div class="wrap">
 
@@ -59,7 +81,28 @@
 
 </div>
 
-<div data-include="/partials/footer.html"></div>
+<!-- ADMIN:FOOTER:START -->
+<footer id="contact">
+  <div class="crumbs" style="top:18px;right:60px"></div>
+  <div class="wrap">
+    <div class="slate">
+      <div>
+        <div class="slate-label"><span class="tape-label">Contact</span></div>
+        <span id="email-slot" data-e="moc.atsopnitram@noitamina"></span>
+      </div>
+      <div>
+        <div class="slate-label"><span class="tape-label">Links</span></div>
+        <div class="foot-links">
+          <a href="https://www.imdb.com/name/nm9477393/" target="_blank" rel="noopener">IMDb</a>
+          <a href="https://www.linkedin.com/in/postamartin/" target="_blank" rel="noopener">LinkedIn</a>
+          <a href="https://vimeo.com/martinposta" target="_blank" rel="noopener">Vimeo</a>
+        </div>
+      </div>
+    </div>
+    <div class="copyright">© 2026 Martin Pošta.</div>
+  </div>
+</footer>
+<!-- ADMIN:FOOTER:END -->
 
 <script src="/assets/include.js"></script>
 

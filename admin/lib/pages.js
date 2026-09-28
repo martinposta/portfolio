@@ -14,10 +14,8 @@ const VIDEO_EMBED = /^https:\/\/(player\.vimeo\.com\/video\/\d+|www\.youtube(-no
 const LOCAL_IMAGE = /^\/images\/[\w./-]+\.(jpe?g|png|webp|gif|svg)$/i;
 const DOODLE = /^\/images\/doodles\/[\w.-]+\.(svg|png|webp|gif|webm|mp4)$/i;
 
-function esc(s) {
-  return String(s == null ? '' : s)
-    .replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
-}
+const { esc } = require('./esc');
+const { renderHeader, renderFooter, renderMeta } = require('./chrome');
 
 // Inline text: *italic* and [label](url). Everything else is escaped, so a
 // stray < or " in the copy can never break the page.
@@ -96,9 +94,25 @@ function renderBlock(b, paper, i) {
   return '';
 }
 
+// What a link preview shows for a page: its own description, else the
+// first paragraph; its own image, else its first photo (else the site's).
+function shareInfo(page) {
+  const firstText = (page.blocks || []).find((b) => b.type === 'text' && b.style !== 'tight');
+  const plain = firstText ? firstText.text.split(/\n\s*\n/)[0].replace(/\*|\[([^\]]+)\]\([^)]*\)/g, '$1').replace(/\s+/g, ' ').trim() : '';
+  const firstPhoto = (page.blocks || []).find((b) => b.type === 'photos' && (b.items || []).length);
+  return {
+    title: page.title + ' — Martin Pošta',
+    description: page.description || (plain.length > 200 ? plain.slice(0, 197).replace(/\s+\S*$/, '') + '…' : plain),
+    image: page.image || (firstPhoto ? firstPhoto.items[0].src : ''),
+    path: '/projects/' + page.slug + '.html'
+  };
+}
+
+// opts.site (content/site.json) supplies the header, footer and head tags.
 // opts.preview keeps the data-block markers (the admin's preview uses them to
 // select a block by clicking it); the published file does not need them.
 function renderPage(page, opts) {
+  const site = (opts && opts.site) || {};
   const paper = paperPicker();
   let body = (page.blocks || []).map((b, i) => renderBlock(b, paper, i)).join('\n\n');
   if (!(opts && opts.preview)) body = body.replace(/ data-block="\d+"/g, '');
@@ -110,9 +124,9 @@ function renderPage(page, opts) {
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>${esc(page.title)} — Martin Pošta</title>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Special+Elite&family=Reenie+Beanie&family=Work+Sans:wght@400;500&display=swap" rel="stylesheet">
+<!-- ADMIN:META:START -->
+${renderMeta(site, shareInfo(page))}
+<!-- ADMIN:META:END -->
 <link rel="stylesheet" href="/assets/notebook.css">
 </head>
 <body class="project-page">
@@ -121,7 +135,9 @@ function renderPage(page, opts) {
 <div class="spine"></div>
 <div class="margin-rule"></div>
 
-<div data-include="/partials/header.html"></div>
+<!-- ADMIN:HEADER:START -->
+${renderHeader(site)}
+<!-- ADMIN:HEADER:END -->
 
 <div class="wrap">
 
@@ -144,7 +160,9 @@ ${body}
 
 </div>
 
-<div data-include="/partials/footer.html"></div>
+<!-- ADMIN:FOOTER:START -->
+${renderFooter(site)}
+<!-- ADMIN:FOOTER:END -->
 
 <script src="/assets/include.js"></script>
 
@@ -160,6 +178,7 @@ function validatePage(p) {
   if (!SLUG.test(p.slug || '')) return `${name}: the address may only contain a-z, 0-9 and dashes`;
   if (!String(p.title || '').trim()) return `${name}: the title is empty`;
   for (const t of p.tags || []) if (!TAG_COLORS.includes(t.color)) return `${name}: unknown label colour ${t.color}`;
+  if (p.image && !LOCAL_IMAGE.test(p.image)) return `${name}: the sharing image must be an uploaded image`;
   const blocks = p.blocks || [];
   for (let i = 0; i < blocks.length; i++) {
     const b = blocks[i], where = `${name}, block ${i + 1} (${b && b.type})`;
@@ -181,4 +200,4 @@ function validatePage(p) {
   return null;
 }
 
-module.exports = { renderPage, validatePage, BLOCK_TYPES, SLUG, esc };
+module.exports = { renderPage, validatePage, shareInfo, BLOCK_TYPES, SLUG, esc };

@@ -164,6 +164,7 @@
           '</div><button type="button" class="x" data-tdel="' + k + '" aria-label="Remove label">×</button></div>';
       }).join('') + '<div><button type="button" class="btn" data-act="addtag">+ Label</button></div></div>' +
       '<label class="check"><input type="checkbox" data-pg="coffee"' + (p.coffee ? ' checked' : '') + '> Coffee stain by the title</label>' +
+      '<div class="f"><label class="lbl" for="pdesc">Description for search and link previews (optional)</label><textarea id="pdesc" data-pg="description" rows="2" placeholder="Empty: the first paragraph is used">' + esc(p.description || '') + '</textarea></div>' +
       '<div class="hint">' + (linked.length ? 'Opened from the gallery card' + (linked.length > 1 ? 's ' : ' ') + linked.map(function(c){ return '<b>' + esc(c.title) + '</b>' + (c.visible ? '' : ' (draft)'); }).join(', ') + '.'
         : 'No gallery card opens this page yet. Add one in the Gallery tab (click behaviour: dedicated project page).') + '</div>' +
       '<div class="row"><button type="button" class="btn danger" data-act="delpage">Delete page</button></div>' +

@@ -13,12 +13,12 @@ site/        everything GitHub Pages publishes — nothing else goes live
   index.html        homepage; the gallery grid between ADMIN:GRID markers is generated
   projects/*.html   one page per project, GENERATED from content/pages/*.json
   images/doodles/   drawings for the doodle block (svg/png/gif/webm)
-  assets/           notebook.css (whole design system), include.js
-  partials/         header/footer, injected by include.js
+  assets/           notebook.css (whole design system), include.js, fonts.css + fonts/
   images/           thumbs/, projects/, texture/
   CNAME, posta_resume.pdf
 content/     source data the admin edits: projects.json (gallery cards),
-             pages/<slug>.json (project pages as block lists)
+             pages/<slug>.json (project pages as block lists),
+             site.json (header, footer, title/description/image for sharing)
 admin/       local Node admin tool (zero dependencies)
 design/      working files that must not be published (style guide, .afpub)
 ```
@@ -41,9 +41,9 @@ a fresh deploy can take that long to show without a cache-busting `?v=`.
 - `assets/notebook.css` — the entire design system (typewriter/handwritten
   fonts, spiral-notebook motifs, coffee-stain textures, tape/pin variants,
   lightbox, gallery card/thumb styles). Every page links this one file.
-- `assets/include.js` — (1) `data-include` fetch-based header/footer
-  injection, (2) the shared lightbox driven by each card's `data-*`
-  attributes, (3) obfuscated email + mobile menu toggle.
+- `assets/include.js` — the lightbox driven by each card's `data-*`
+  attributes, the contact email (stored reversed in `data-e`), the mobile
+  menu, and the motion. It no longer fetches anything.
 - Project pages share one template: header include → `.back-link` → `.hero`
   with `.project-meta` tape-labels → `.prose` → `.screen`/`.reel-card` video
   or photo frames (`.pin-2/3/4` vary paper colour/rotation) → footer include.
@@ -99,8 +99,8 @@ identical after the fix.
    (`images/doodles/`, SVG/PNG/WebM, static or animated), cards reshuffling
    with overshoot on tab change, pencil-drawn heading underlines, lightbox
    landing like a pinned sheet. All respect `prefers-reduced-motion`.
-7. Bake header/footer into the HTML at publish time, meta/OG tags,
-   self-hosted fonts.
+7. ✅ (branch site-chrome, awaiting review) Header/footer baked into the HTML,
+   meta/OG tags, self-hosted fonts, admin tab "Header & footer".
 8. Windows + Proxmox copies of the admin (deploy key, Tailscale) — last.
 
 ## Local preview
@@ -216,3 +216,23 @@ three became empty and were dropped. What that did and did not do:
   `github-pages` environment rule (deploy from `main` only) and the default
   branch.
 - http→https: Cloudflare "Always Use HTTPS" is on (2026-09-28, verified 301).
+
+## Header, footer and sharing tags (`admin/lib/chrome.js`, tab "Header & footer")
+
+- `content/site.json` → written INTO every page between
+  `ADMIN:META` (in <head>), `ADMIN:HEADER` and `ADMIN:FOOTER` markers. Until
+  2026-09-28 include.js fetched /partials after load: invisible without JS,
+  to crawlers and to link previews, and the header popped in late.
+- Publishing site.json rewrites the homepage's three blocks (+ <title>) and
+  every visible project page. The gallery publish only touches the grid, the
+  page publish renders pages with the current site.json.
+- reel / portfolio / contact are fixed in the renderer; resume (any PDF on
+  the site, uploads go to /files/) and the links after "|" are data.
+- Link previews: homepage uses site.meta; a project page uses its own
+  `description` (else the first paragraph) and its first photo (else the
+  site image). `og:image` must be absolute, hence `meta.url`.
+- Fonts are self-hosted (`assets/fonts.css`, latin + latin-ext woff2 from
+  Google Fonts, OFL). Special Elite had no latin-ext before, so the "š" in
+  "Pošta" was drawn by the fallback font; now it is not.
+- `design/style-guide.html` still includes the old /partials — it is a
+  design reference, not published.
