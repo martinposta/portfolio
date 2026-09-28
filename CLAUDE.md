@@ -189,3 +189,24 @@ identical after the fix.
 - Hover loops: `thumb.loop` (`/images/loops/*.webm|mp4`) renders as
   `data-loop` on the thumb; the `<video>` is created on first hover only and
   never on touch screens. Uploaded untouched from the card editor.
+
+## History rewrite (2026-09-28)
+
+The private address was removed from the whole history with `git filter-repo`
+(mailmap for author/committer, old PDF/.afpub blobs replaced by the current
+ones, the obfuscated address in old include.js rewritten). 28 → 25 commits:
+three became empty and were dropped. What that did and did not do:
+- The pushed history is clean (0 hits in every blob and in commit metadata).
+- **GitHub still served the old commits by SHA** (commit page and .patch with
+  the address). Their SHAs were public through Actions runs and deployments,
+  so all old runs (9) and deployments (727) were deleted after one fresh
+  deploy from the new history. A ticket with GitHub Support (Virtual Agent,
+  "clear cached views") asks them to drop the dangling commits.
+- Old branches `gh-pages`, `master`, `redesign` are gone from GitHub. Backups
+  (bundles, full history incl. the old address) are in
+  `~/Desktop/Martin/portfolio-zaloha-2026-09-28/`: restore with
+  `git clone -b <branch> <bundle>`.
+- A force-push is Martin's to run (Claude's auto mode refuses it).
+- Compared with deleting and recreating the repo (done for the photo
+  gallery project): filter-repo keeps settings and URLs, but only the
+  support ticket removes the old commits from GitHub.
