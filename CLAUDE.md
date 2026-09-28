@@ -251,3 +251,24 @@ three became empty and were dropped. What that did and did not do:
   preconnects to Vimeo, and a lightbox card warms its player after 150 ms of
   hover (the click reuses the iframe). Bunny Stream is the option Martin is
   considering if the remaining delay matters.
+
+## Media (2026-09-28)
+
+- Gallery thumbnails are WebP (`cwebp -q 80`, 900×600 kept): 8.8 MB → 0.98 MB
+  for 28 files, no visible difference. The JPGs are gone (git history has them).
+- Hover loops: 18 cards have `thumb.loop` → `site/images/loops/<card-id>.mp4`
+  (2.5 s, 480×480, muted H.264, faststart, 34–242 KB, 2.4 MB total).
+  Made by `admin/tools/make-loops.js <folder> id=file[@start|@from-to] …`:
+  it picks the 2.5 s with most movement, rejects windows with a cut, a fade
+  or a dark/white title card, relaxes the cut rule only if nothing passes,
+  crops letterbox bars and centres a square. Contact sheets go to the temp
+  folder — look at them, the heuristic cannot see text overlays.
+  Hand-picked: Garden Witch @52.1 with a manual top crop (captions run
+  through the whole trailer), Bearavity @36, Gravitace @45, Black Demon @6,
+  Whalesinger searched only 3–38 s (that file is a PFX reel of several
+  films). First kept its first-pass loop (black background fails the
+  darkness rule).
+- Source videos (2.4 GB, 19 files) live OUTSIDE the repo in
+  `~/Desktop/Martin/portfolio-videa/`. Never put them under the repo folder:
+  an untracked file there blocks the admin's branch switch, and committing
+  them would bloat every clone for good.

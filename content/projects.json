@@ -23,7 +23,7 @@
     "flag": "Feature",
     "thumb": {
       "type": "photo",
-      "src": "/images/thumbs/ploye2_thumb.jpg",
+      "src": "/images/thumbs/ploye2_thumb.webp",
       "alt": "Ploye 2"
     },
     "interaction": {
@@ -55,7 +55,7 @@
     "flag": "VFX",
     "thumb": {
       "type": "photo",
-      "src": "/images/thumbs/pressure_thumb.jpg",
+      "src": "/images/thumbs/pressure_thumb.webp",
       "alt": "Pressure"
     },
     "interaction": {
@@ -71,8 +71,9 @@
     "flag": "Feature",
     "thumb": {
       "type": "photo",
-      "src": "/images/thumbs/tlws_thumb.jpg",
-      "alt": "The Last Whale Singer"
+      "src": "/images/thumbs/tlws_thumb.webp",
+      "alt": "The Last Whale Singer",
+      "loop": "/images/loops/the-last-whalesinger.mp4"
     },
     "interaction": {
       "type": "lightbox",
@@ -92,8 +93,9 @@
     "flag": "Feature",
     "thumb": {
       "type": "photo",
-      "src": "/images/thumbs/pysna_thumb.jpg",
-      "alt": "Pyšná Princezna"
+      "src": "/images/thumbs/pysna_thumb.webp",
+      "alt": "Pyšná Princezna",
+      "loop": "/images/loops/pysna-princezna.mp4"
     },
     "interaction": {
       "type": "lightbox",
@@ -113,8 +115,9 @@
     "flag": "VFX",
     "thumb": {
       "type": "photo",
-      "src": "/images/thumbs/tbd_thumb.jpg",
-      "alt": "The Black Demon"
+      "src": "/images/thumbs/tbd_thumb.webp",
+      "alt": "The Black Demon",
+      "loop": "/images/loops/the-black-demon.mp4"
     },
     "interaction": {
       "type": "lightbox",
@@ -134,7 +137,7 @@
     "flag": "personal",
     "thumb": {
       "type": "photo",
-      "src": "/images/thumbs/lego_thumb.jpg",
+      "src": "/images/thumbs/lego_thumb.webp",
       "alt": "lego"
     },
     "interaction": {
@@ -150,8 +153,9 @@
     "flag": "personal",
     "thumb": {
       "type": "photo",
-      "src": "/images/thumbs/action_thumb.jpg",
-      "alt": "action"
+      "src": "/images/thumbs/action_thumb.webp",
+      "alt": "action",
+      "loop": "/images/loops/action-animation-workshop.mp4"
     },
     "interaction": {
       "type": "lightbox",
@@ -171,8 +175,9 @@
     "flag": "Game",
     "thumb": {
       "type": "photo",
-      "src": "/images/thumbs/agwl_thumb.jpg",
-      "alt": "A Garden Witch's Life"
+      "src": "/images/thumbs/agwl_thumb.webp",
+      "alt": "A Garden Witch's Life",
+      "loop": "/images/loops/a-garden-witch-s-life.mp4"
     },
     "interaction": {
       "type": "lightbox",
@@ -192,7 +197,7 @@
     "flag": "Game",
     "thumb": {
       "type": "photo",
-      "src": "/images/thumbs/tlth_thumb.jpg",
+      "src": "/images/thumbs/tlth_thumb.webp",
       "alt": "The Last Train Home"
     },
     "interaction": {
@@ -213,7 +218,7 @@
     "flag": "personal",
     "thumb": {
       "type": "photo",
-      "src": "/images/thumbs/orc_thumb.jpg",
+      "src": "/images/thumbs/orc_thumb.webp",
       "alt": "orc"
     },
     "interaction": {
@@ -234,8 +239,9 @@
     "flag": "personal",
     "thumb": {
       "type": "photo",
-      "src": "/images/thumbs/filming_thumb.jpg",
-      "alt": "filming"
+      "src": "/images/thumbs/filming_thumb.webp",
+      "alt": "filming",
+      "loop": "/images/loops/making-movies-with-friends.mp4"
     },
     "interaction": {
       "type": "page",
@@ -250,7 +256,7 @@
     "flag": "Game",
     "thumb": {
       "type": "photo",
-      "src": "/images/thumbs/tinhearts_thumb.jpg",
+      "src": "/images/thumbs/tinhearts_thumb.webp",
       "alt": "Tin Hearts"
     },
     "interaction": {
@@ -271,8 +277,9 @@
     "flag": "TV Series",
     "thumb": {
       "type": "photo",
-      "src": "/images/thumbs/muppets_thumb.jpg",
-      "alt": "Muppet Babies"
+      "src": "/images/thumbs/muppets_thumb.webp",
+      "alt": "Muppet Babies",
+      "loop": "/images/loops/muppet-babies-s3.mp4"
     },
     "interaction": {
       "type": "lightbox",
@@ -292,8 +299,9 @@
     "flag": "Short Film",
     "thumb": {
       "type": "photo",
-      "src": "/images/thumbs/perla_thumb.jpg",
-      "alt": "Watersprite"
+      "src": "/images/thumbs/perla_thumb.webp",
+      "alt": "Watersprite",
+      "loop": "/images/loops/watersprite.mp4"
     },
     "interaction": {
       "type": "lightbox",
@@ -313,7 +321,7 @@
     "flag": "VR Experience",
     "thumb": {
       "type": "photo",
-      "src": "/images/thumbs/dinosauri_thumb.jpg",
+      "src": "/images/thumbs/dinosauri_thumb.webp",
       "alt": "Dinosauři"
     },
     "interaction": {
@@ -329,8 +337,9 @@
     "flag": "Short Film",
     "thumb": {
       "type": "photo",
-      "src": "/images/thumbs/jama_thumb.jpg",
-      "alt": "Jáma"
+      "src": "/images/thumbs/jama_thumb.webp",
+      "alt": "Jáma",
+      "loop": "/images/loops/jama.mp4"
     },
     "interaction": {
       "type": "link",
@@ -345,8 +354,9 @@
     "flag": "Short",
     "thumb": {
       "type": "photo",
-      "src": "/images/thumbs/vr_thumb.jpg",
-      "alt": "vr"
+      "src": "/images/thumbs/vr_thumb.webp",
+      "alt": "vr",
+      "loop": "/images/loops/vr-animation-workshop.mp4"
     },
     "interaction": {
       "type": "page",
@@ -361,8 +371,9 @@
     "flag": "PC VR",
     "thumb": {
       "type": "photo",
-      "src": "/images/thumbs/ttvr_thumb.jpg",
-      "alt": "Time Transit VR"
+      "src": "/images/thumbs/ttvr_thumb.webp",
+      "alt": "Time Transit VR",
+      "loop": "/images/loops/time-transit-vr.mp4"
     },
     "interaction": {
       "type": "page",
@@ -377,7 +388,7 @@
     "flag": "Feature",
     "thumb": {
       "type": "photo",
-      "src": "/images/thumbs/spycat_thumb.jpg",
+      "src": "/images/thumbs/spycat_thumb.webp",
       "alt": "Spy Cat"
     },
     "interaction": {
@@ -393,8 +404,9 @@
     "flag": "Short Film",
     "thumb": {
       "type": "photo",
-      "src": "/images/thumbs/neil_thumb.jpg",
-      "alt": "Neil"
+      "src": "/images/thumbs/neil_thumb.webp",
+      "alt": "Neil",
+      "loop": "/images/loops/neil.mp4"
     },
     "interaction": {
       "type": "page",
@@ -409,8 +421,9 @@
     "flag": "Short Film",
     "thumb": {
       "type": "photo",
-      "src": "/images/thumbs/plodymraku_thumb.jpg",
-      "alt": "Plody mraků"
+      "src": "/images/thumbs/plodymraku_thumb.webp",
+      "alt": "Plody mraků",
+      "loop": "/images/loops/plody-mraku.mp4"
     },
     "interaction": {
       "type": "page",
@@ -425,8 +438,9 @@
     "flag": "Short Film",
     "thumb": {
       "type": "photo",
-      "src": "/images/thumbs/first_thumb.jpg",
-      "alt": "First"
+      "src": "/images/thumbs/first_thumb.webp",
+      "alt": "First",
+      "loop": "/images/loops/first.mp4"
     },
     "interaction": {
       "type": "lightbox",
@@ -446,8 +460,9 @@
     "flag": "Short Film",
     "thumb": {
       "type": "photo",
-      "src": "/images/thumbs/bearavity_thumb.jpg",
-      "alt": "Bearavity"
+      "src": "/images/thumbs/bearavity_thumb.webp",
+      "alt": "Bearavity",
+      "loop": "/images/loops/bearavity.mp4"
     },
     "interaction": {
       "type": "lightbox",
@@ -467,8 +482,9 @@
     "flag": "Short Film",
     "thumb": {
       "type": "photo",
-      "src": "/images/thumbs/gravitace_thumb.jpg",
-      "alt": "Gravity"
+      "src": "/images/thumbs/gravitace_thumb.webp",
+      "alt": "Gravity",
+      "loop": "/images/loops/gravity.mp4"
     },
     "interaction": {
       "type": "lightbox",
@@ -488,8 +504,9 @@
     "flag": "Short Film",
     "thumb": {
       "type": "photo",
-      "src": "/images/thumbs/evoluce_thumb.jpg",
-      "alt": "Evoluce"
+      "src": "/images/thumbs/evoluce_thumb.webp",
+      "alt": "Evoluce",
+      "loop": "/images/loops/evoluce.mp4"
     },
     "interaction": {
       "type": "lightbox",
@@ -509,8 +526,9 @@
     "flag": "Short Film",
     "thumb": {
       "type": "photo",
-      "src": "/images/thumbs/figurespacing_thumb.jpg",
-      "alt": "Figure Spacing"
+      "src": "/images/thumbs/figurespacing_thumb.webp",
+      "alt": "Figure Spacing",
+      "loop": "/images/loops/figure-spacing.mp4"
     },
     "interaction": {
       "type": "page",
