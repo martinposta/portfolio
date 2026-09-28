@@ -33,7 +33,8 @@ class GitError extends Error {
 function makeGit(repoDir) {
   function run(args, opts) {
     try {
-      const out = execFileSync('git', args, {
+      // quotepath=off: paths like 'plody mraků' come back readable, not as \\303\\255 escapes
+      const out = execFileSync('git', ['-c', 'core.quotepath=off', ...args], {
         cwd: repoDir, encoding: 'utf8', timeout: (opts && opts.timeout) || 30000,
         stdio: ['ignore', 'pipe', 'pipe'],
         env: Object.assign({}, process.env, { GIT_TERMINAL_PROMPT: '0' })
