@@ -236,3 +236,18 @@ three became empty and were dropped. What that did and did not do:
   "Pošta" was drawn by the fallback font; now it is not.
 - `design/style-guide.html` still includes the old /partials — it is a
   design reference, not published.
+
+## Caching and video start-up (2026-09-28)
+
+- Cloudflare sends `cache-control: max-age=14400` for /assets (its Browser
+  Cache TTL, overriding GitHub's 10 min). So the Pages workflow runs
+  `admin/tools/stamp-assets.js` on the copy it publishes: every
+  `/assets/*.css|js` link gets `?v=<content hash>`. The repo HTML stays
+  unstamped. Fonts are referenced from fonts.css without a version: they
+  never change; a new font file needs a new file name.
+- Vimeo start-up was measured on the live site: player ready ~0.35 s, video
+  playing after 1–4 s depending on how recently that video was watched
+  (Vimeo's CDN cache). Connection 116 Mbit/s, not the bottleneck. Each page
+  preconnects to Vimeo, and a lightbox card warms its player after 150 ms of
+  hover (the click reuses the iframe). Bunny Stream is the option Martin is
+  considering if the remaining delay matters.
