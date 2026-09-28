@@ -79,27 +79,52 @@ function detectCrop(file, start) {
   return all.length ? all[all.length - 1][0] : null;
 }
 
-// spec: "file", "file@12.5" (start there) or "file@3-38" (search only there)
+// Cuts (hard shot changes) between t and t+span, measured at full frame rate.
+function cutsAfter(file, t, span) {
+  const r = spawnSync('ffmpeg', ['-hide_banner', '-ss', String(t), '-t', String(span), '-i', file, '-an',
+    '-vf', "scale=320:-2,select='gt(scene\\,0.25)',showinfo", '-f', 'null', '-'], { encoding: 'utf8' });
+  return [...String(r.stderr || '').matchAll(/pts_time:([\d.]+)/g)].map((m) => t + parseFloat(m[1]));
+}
+
+// A hand-picked start "snaps to the shot": if a cut comes within the loop,
+// the loop ends just before it when that still leaves 1.5 s, otherwise it
+// starts just after it (and ends before the following cut).
+function snapToShot(file, t) {
+  const cuts = cutsAfter(file, t, WIN + 3);
+  const first = cuts.find((c) => c > t + 0.08);
+  if (!first || first >= t + WIN) return { t, len: WIN, note: 'as asked' };
+  if (first - t >= 1.5) return { t, len: +(first - t - 0.05).toFixed(2), note: `shortened to end before the cut at ${first.toFixed(1)} s` };
+  const start = first + 0.05, next = cuts.find((c) => c > start + 0.08);
+  const len = next ? Math.min(WIN, next - start - 0.05) : WIN;
+  return { t: start, len: +len.toFixed(2), note: `moved past the cut at ${first.toFixed(1)} s` };
+}
+
+// spec: "file", "file@12.5" (start there, snapped to the shot), "file@3-38"
+// (search only there); ":top" after the time takes the square from the top
+// of the frame instead of its centre (keeps burnt-in captions out).
 function makeLoop(spec, id, dir) {
-  const [name, at] = spec.split('@');
+  const [name, rawAt] = spec.split('@');
+  const top = /:top$/.test(rawAt || '');
+  const at = (rawAt || '').replace(/:top$/, '') || undefined;
   const file = path.join(dir, name);
   const dur = duration(file);
   let win;
-  if (at && !at.includes('-')) win = { t: parseFloat(at), motion: 0, cut: 'manual' };
+  if (at && !at.includes('-')) { const snap = snapToShot(file, parseFloat(at)); win = { t: snap.t, len: snap.len, motion: 0, cut: 'manual: ' + snap.note }; }
   else {
     const range = at ? at.split('-').map(Number) : null;
     win = bestWindow(analyse(file), dur, range);
   }
   if (!win) return { id, error: 'no usable 2.5 s window (every candidate had a cut, or was too dark/bright)' };
   const crop = detectCrop(file, win.t);
-  const vf = [crop, `crop='min(iw,ih)':'min(iw,ih)'`, `scale=${SIZE}:${SIZE}`, 'fps=25', 'format=yuv420p'].filter(Boolean).join(',');
+  const square = top ? `crop='min(iw,ih)*0.65':'min(iw,ih)*0.65':'(iw-min(iw,ih)*0.65)/2':0` : `crop='min(iw,ih)':'min(iw,ih)'`;
+  const vf = [crop, square, `scale=${SIZE}:${SIZE}`, 'fps=25', 'format=yuv420p'].filter(Boolean).join(',');
   fs.mkdirSync(OUT, { recursive: true });
   const out = path.join(OUT, id + '.mp4');
-  run('ffmpeg', ['-v', 'error', '-y', '-ss', win.t.toFixed(2), '-t', String(WIN), '-i', file, '-an', '-vf', vf,
+  run('ffmpeg', ['-v', 'error', '-y', '-ss', win.t.toFixed(2), '-t', String(win.len || WIN), '-i', file, '-an', '-vf', vf,
     '-c:v', 'libx264', '-preset', 'slow', '-crf', '27', '-movflags', '+faststart', out]);
   fs.mkdirSync(SHEETS, { recursive: true });
   run('ffmpeg', ['-v', 'error', '-y', '-i', out, '-vf', `fps=1.6,scale=160:160,tile=4x1`, '-frames:v', '1', path.join(SHEETS, id + '.png')]);
-  return { id, start: win.t.toFixed(1), of: dur.toFixed(0), motion: win.motion.toFixed(3), cutLimit: win.cut, crop: crop || 'none', kb: Math.round(fs.statSync(out).size / 1024) };
+  return { id, start: win.t.toFixed(2), seconds: win.len || WIN, of: dur.toFixed(0), motion: win.motion.toFixed(3), cutLimit: win.cut, crop: crop || 'none', kb: Math.round(fs.statSync(out).size / 1024) };
 }
 
 const [dir, ...pairs] = process.argv.slice(2);
