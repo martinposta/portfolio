@@ -6,9 +6,14 @@
     },
     "links": [
       {
-        "label": "willownook.studio",
+        "label": "game studio",
         "emoji": "🕹️",
         "href": "https://www.willownook.studio"
+      },
+      {
+        "label": "foto",
+        "href": "https://foto.martinposta.com/",
+        "emoji": "📷"
       }
     ]
   },
