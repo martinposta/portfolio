@@ -99,7 +99,7 @@ identical after the fix.
    (`images/doodles/`, SVG/PNG/WebM, static or animated), cards reshuffling
    with overshoot on tab change, pencil-drawn heading underlines, lightbox
    landing like a pinned sheet. All respect `prefers-reduced-motion`.
-7. ✅ (branch site-chrome, awaiting review) Header/footer baked into the HTML,
+7. ✅ (live 2026-09-28) Header/footer baked into the HTML,
    meta/OG tags, self-hosted fonts, admin tab "Header & footer".
 8. Windows + Proxmox copies of the admin (deploy key, Tailscale) — last.
 
