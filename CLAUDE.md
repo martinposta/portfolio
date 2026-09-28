@@ -91,11 +91,11 @@ identical after the fix.
    JPEG where the browser cannot encode WebP), uploads never silently
    overwrite, server validates category / links / page paths / icons / video
    links, pasted Vimeo/YouTube page links become player URLs.
-5. ✅ (branch pages-editor, awaiting Martin's review) Project pages as block lists in `content/pages/*.json`, generated into
+5. ✅ (live 2026-09-27) Project pages as block lists in `content/pages/*.json`, generated into
    `site/projects/*.html` (block types: text, heading, video, photos, buttons,
    credit card, doodle). Concept: https://claude.ai/artifact/3kHaqxoY8cHXLV2eqHT4FR
    (gallery concept: https://claude.ai/artifact/UVrxmPhpBE4NFG1cwrtUBK).
-6. ✅ (branch animations, awaiting review) Animation: hover loops on cards, a flipbook/doodle system
+6. ✅ (live 2026-09-28) Animation: hover loops on cards, a flipbook/doodle system
    (`images/doodles/`, SVG/PNG/WebM, static or animated), cards reshuffling
    with overshoot on tab change, pencil-drawn heading underlines, lightbox
    landing like a pinned sheet. All respect `prefers-reduced-motion`.
