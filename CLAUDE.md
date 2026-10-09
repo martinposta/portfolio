@@ -101,7 +101,13 @@ identical after the fix.
    landing like a pinned sheet. All respect `prefers-reduced-motion`.
 7. ✅ (live 2026-09-28) Header/footer baked into the HTML,
    meta/OG tags, self-hosted fonts, admin tab "Header & footer".
-8. Windows + Proxmox copies of the admin (deploy key, Tailscale) — last.
+8. A ✅ Windows (2026-10-09): Martin ran admin/windows/setup-windows.bat on
+   Windows 11 Home and every step of admin/windows/TEST.md passed (install,
+   preview, upload, publish, Mac ↔ Windows pull and the refused stale publish).
+   B — Proxmox: a NEW LXC container; Tailscale runs on the Proxmox host, so
+   the container only needs to be reachable through it (enable when creating
+   the container). Deploy key with write access to this repo only, systemd
+   service, restart after admin code updates, periodic fetch.
 
 ## Local preview
 
@@ -207,6 +213,9 @@ three became empty and were dropped. What that did and did not do:
   `~/Desktop/Martin/portfolio-zaloha-2026-09-28/`: restore with
   `git clone -b <branch> <bundle>`.
 - A force-push is Martin's to run (Claude's auto mode refuses it).
+- **GitHub Support cleared the dangling commits** (checked 2026-10-09: the
+  old commit 217e143 answers 404 on the web, .patch and API). The rewrite
+  is complete without deleting the repo.
 - Compared with deleting and recreating the repo (done for the photo
   gallery project): filter-repo keeps settings and URLs, but only the
   support ticket removes the old commits from GitHub.
