@@ -13,7 +13,8 @@
     "interaction": {
       "type": "link",
       "href": "https://www.willownook.studio"
-    }
+    },
+    "visible": false
   },
   {
     "id": "ploye-2",
